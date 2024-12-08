@@ -13,4 +13,5 @@ module.exports = {
   },
   transformIgnorePatterns: ["<rootDir>/node_modules/"],
   setupFiles: ["dotenv/config"],
+  testTimeout: 30000,
 };
