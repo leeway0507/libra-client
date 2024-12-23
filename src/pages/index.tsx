@@ -15,7 +15,7 @@ const anotherStyle = css({
 	textDecoration: "underline",
 });
 
-const AnotherComponent = () => <div css={anotherStyle}>Some text with an underline.</div>;
+const AnotherComponent = () => <div css={anotherStyle}>Cloud flare CI/CD Check!</div>;
 
 export default function Page() {
 	return (
