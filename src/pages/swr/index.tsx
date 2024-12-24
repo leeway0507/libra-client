@@ -4,7 +4,7 @@ const fetcher = (path:string) => fetch(new URL(path,import.meta.env.VITE_BACKEND
 
 export default function App() {
   const { data, error, isLoading } = useSWR(
-    "/scrap/yangcheon/8970126740",
+    "/scrap/111041/8970126740",
     fetcher
   );
 
@@ -12,7 +12,6 @@ export default function App() {
   if (isLoading) return "Loading...";
   return (
     <div>
-      <strong>👁 {JSON.stringify(data)}</strong>{" "}
       <strong>👁 {JSON.stringify(data)}</strong>{" "}
     </div>
   );
