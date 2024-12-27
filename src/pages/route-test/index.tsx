@@ -11,7 +11,9 @@ const SomeComponent = ({ children }: { children: React.ReactNode }) => (
 	</div>
 );
 
-const AnotherComponent = () => <div css={{ color: "red", textDecoration: "underline" }}>Route Test 2</div>;
+const AnotherComponent = () => (
+	<div css={{ color: "red", textDecoration: "underline" }}>Route Test 2</div>
+);
 
 export default function Page() {
 	return (
