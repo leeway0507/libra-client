@@ -1,11 +1,12 @@
 import { Global, css } from "@emotion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, useRoutes } from "react-router";
+import { BrowserRouter, useRoutes, RouteObject } from "react-router";
 import routes from "~react-pages";
 import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
-import {  Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import NotFound from "./pages/404";
 
 function GlobalStyles() {
 	return (
@@ -42,6 +43,11 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+	const notFoundRoute: RouteObject = {
+		path: "*", // Catch-All Route
+		element: <NotFound />,
+	};
+	routes.push(notFoundRoute);
 	return (
 		<>
 			<GlobalStyles />
