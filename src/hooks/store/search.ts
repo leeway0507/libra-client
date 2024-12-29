@@ -1,11 +1,18 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BookInfo } from "./bookmark";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export type SearchProps = {
 	keyword: string;
 	bookResult: BookInfo[];
 };
+
+export type Keyword = {
+	id: string
+	keyword: string
+}
 
 export interface BookResultState {
 	bookResult: SearchProps;
@@ -23,24 +30,24 @@ export const useBookResultStore = create<BookResultState>()((set) => ({
 	removeBookResult: () => set(() => ({ bookResult: {} as SearchProps })),
 }));
 
-export interface SearchKeywordState {
-	RecentKeywords: string[];
+export interface RecentSearchKeywordState {
+	RecentKeywords: Keyword[];
 	addKeyword: (keyword: string) => void;
-	removeKeyword: (keyword: string) => void;
+	removeKeyword: (keyword: Keyword) => void;
 }
 
-export const useSearchKeywordStore = create<SearchKeywordState>()(
+export const useSearchKeywordStore = create<RecentSearchKeywordState>()(
 	persist(
 		(set) => ({
 			RecentKeywords: [],
-			addKeyword: (keyword: string) => {
+			addKeyword: (keyword) => {
 				set((state) => ({
-					RecentKeywords: [keyword, ...state.RecentKeywords],
+					RecentKeywords: [{id:uuidv4(),keyword}, ...state.RecentKeywords],
 				}));
 			},
-			removeKeyword: (keyword: string) => {
+			removeKeyword: (keyword) => {
 				set((state) => ({
-					RecentKeywords: state.RecentKeywords.filter((l) => l !== keyword),
+					RecentKeywords: state.RecentKeywords.filter((l) => l.id !== keyword.id),
 				}));
 			},
 		}),

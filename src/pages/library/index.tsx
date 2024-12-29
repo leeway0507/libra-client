@@ -59,13 +59,16 @@ export default function Page() {
 function MainBox() {
 	const { changeLibs, selectedLibs, removeLib } = useLibStore();
 	const [libSeoul, setLibSeoul] = useState<LibInfo[]>(libInfoSeoul);
+
 	const c = selectedLibs
 		.map((v) => libSeoul.find((v2) => v.value === v2.libCode))
 		.filter((v): v is LibInfo => v !== undefined);
 	const [selected, setSelced] = useState<LibInfo[]>(c);
+
 	useEffect(() => {
 		changeLibs(selected.map((v) => ({ label: v.libName, value: v.libCode })));
 	}, [selected]);
+
 	const { getLocation, userLocation, error } = useGetGeolocation();
 
 	const onRemove = (libCode: string) => {
