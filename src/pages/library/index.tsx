@@ -154,10 +154,10 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 					mx={"auto"}
 					w="80%"
 					fit="contain"
-					src={`/lib-logo/${item.libCode}.png`}
-					onError={({ currentTarget }) => {
-						currentTarget.src = `/lib-logo/district/${district[item.district as keyof typeof district]}.png`;
-					}}
+					src={`/lib-logo/district/${district[item.district as keyof typeof district]}.png`}
+					// onError={({ currentTarget }) => {
+					// 	currentTarget.src = `/lib-logo/district/${district[item.district as keyof typeof district]}.png`;
+					// }}
 					alt={item.libName}
 				/>
 			</Flex>
@@ -165,11 +165,11 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 				basis={"2/3"}
 				direction={"column"}
 				fontSize={"md"}
-				color={"gray"}
+				color={"GrayText"}
 				justifyContent={"center"}
 			>
 				<Flex alignItems={"center"} justifyContent={"space-between"}>
-					<Text color={"black"} fontWeight={500}>
+					<Text color={"HighlightText"} fontWeight={500}>
 						[{item.district}] {item.libName}
 					</Text>
 					{onRemove && <CloseButton size={"xs"} onClick={onRemove} />}
@@ -210,7 +210,7 @@ const Option = (props: OptionProps<LibInfo>) => {
 
 	return (
 		<components.Option {...props}>
-			<Flex color={"black"} fontWeight={500} justifyContent={"space-between"}>
+			<Flex color={"HighlightText"} fontWeight={500} justifyContent={"space-between"}>
 				<Text>
 					[{data.district}] {data.libName}
 				</Text>
