@@ -12,7 +12,7 @@ type libCodeProps = {
 };
 
 export interface LibState {
-	liCodes: {
+	libCodes: {
 		[key: string]: libCodeProps;
 	};
 	defaultLibs: LibProps[];
@@ -32,7 +32,7 @@ const useLibStore = create<LibState>()(
 		(set) => ({
 			selectedLibs: [],
 			defaultLibs: defaultLibs,
-			liCodes: libCodeAsKey,
+			libCodes: libCodeAsKey,
 			addLib: (lib: LibProps) => {
 				set((state) => ({
 					selectedLibs: [...state.selectedLibs, lib],
