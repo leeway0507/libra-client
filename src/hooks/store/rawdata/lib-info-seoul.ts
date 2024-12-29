@@ -2112,7 +2112,7 @@ export const libInfoSeoul = [
 		homepage: "http://gnlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 수요일 / 법정공휴일, 기타 사정으로 도서관장이 정하는 날",
 		operatingTime: "자료실 평일09:00-18:00 (종합자료실 20:00) 주말09:00-17:00",
-		district: "강남구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2125,7 +2125,7 @@ export const libInfoSeoul = [
 		homepage: "http://gdlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 목요일 / 일요일을 제외한 법정공휴일, 기타 관장이 필요하다고 인정하는 날",
 		operatingTime: "07:00-22:00",
-		district: "강동구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2138,7 +2138,7 @@ export const libInfoSeoul = [
 		homepage: "http://gslib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 금요일 / 일요일을 제외한 법정공휴일, 휴관이 필요하다고 관장이 지정하는 날",
 		operatingTime: "하절기(3월-10월) 07:00~22:00 동절기(11-2월) 08:00~22:00",
-		district: "강서구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2151,7 +2151,7 @@ export const libInfoSeoul = [
 		homepage: "http://gplib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 목요일 / 일요일을 제외한 법정공휴일, 기타 도서관 필요에 의해 정하는 날",
 		operatingTime:
-			"하(동)절기: 07(08)～22시, 자료실 평일(문헌정보실:9시～20시, 어린이실/디지털실:9시～18시) / 주말(9시～17시)",
+			"하(동)절기: 07(08)～22시, 자료실 평일(문헌정보실:9시～20시, 어린이실/디지털실:9시～18시) / 주말(9시～17시교육청",
 		district: "강남구",
 		distance: 0,
 	},
@@ -2165,7 +2165,7 @@ export const libInfoSeoul = [
 		homepage: "http://gdllc.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 월요일 / 일요일을 제외한 법정공휴일, 평생학습관 사정으로 인한 임시휴관일",
 		operatingTime: "07:00~22:00(3월~10월),08:00~22:00(11월~2월)",
-		district: "강동구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2178,7 +2178,7 @@ export const libInfoSeoul = [
 		homepage: "http://gclib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 수요일 / 일요일을 제외한 법정공휴일, 기타 도서관장이 정하는 임시휴관일",
 		operatingTime: "평일 : 09:00~20:00, 주말 : 09:00~17:00 (장시간 개관 자료실 기준)",
-		district: "구로구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2191,7 +2191,7 @@ export const libInfoSeoul = [
 		homepage: "http://grlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 수요일 / 일요일을 제외한 법정공휴일, 휴관이 필요하다고 인정하는 날",
 		operatingTime: "07(08):00-22(22):00",
-		district: "구로구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2204,7 +2204,7 @@ export const libInfoSeoul = [
 		homepage: "http://nslib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 월요일 / 법정공휴일, 도서관 사정으로 휴관하는 일",
 		operatingTime:
-			"인문사회과학실 평일 09:00 ~ 20:00 토,일 09:00 ~ 17:00, 문학실/자연과학실 평일 09:00 ~ 20:00 토,일 09:00 ~ 17:00(단, 11월-2월에는 평일 09:00 ~ 19:00), 전자정보실/독서치료어학실/연속간행물실 평일 09:00 ~ 18:00 토,일 09:00 ~ 17:00, 일반열람실 평일 07:00 ~ 22:00 토,일 07:00 ~ 22:00(단, 11월-2월에는 평일 08:00 ~ 22:00 토,일 08:00 ~ 22:00)",
+			"인문사회과학실 평일 09:00 ~ 20:00 토,일 09:00 ~ 17:00, 문학실/자연과학실 평일 09:00 ~ 20:00 토,일 09:00 ~ 17:00(단, 11월-2월에는 평일 09:00 ~ 19:00), 전자정보실/독서치료어학실/연속간행물실 평일 09:00 ~ 18:00 토,일 09:00 ~ 17:00, 일반열람실 평일 07:00 ~ 22:00 토,일 07:00 ~ 22:00(단, 11월-2월에는 평일 08:00 ~ 22:00 토,일 08:00 ~ 22:00교육청",
 		district: "용산구",
 		distance: 0,
 	},
@@ -2218,7 +2218,7 @@ export const libInfoSeoul = [
 		homepage: "http://nwllc.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 월요일 / 법정공휴일(토, 일요일과 겹칠 경우 휴관), 휴관이 필요하다고 인정하는 날",
 		operatingTime:
-			"[평일] 문헌정보실09:00~20:00, 어린이실,디지털실 09:00~18:00 [주말] 09:00~17:00",
+			"[평일] 문헌정보실09:00~20:00, 어린이실,디지털실 09:00~18:00 [주말] 09:00~17:교육청",
 		district: "노원구",
 		distance: 0,
 	},
@@ -2232,7 +2232,7 @@ export const libInfoSeoul = [
 		homepage: "http://dblib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 수요일 / 법정공휴일, 도서관 사정으로 휴관일을 공고한 경우",
 		operatingTime:
-			"종합자료실: 평일 09~20시, 주말 09~17시 어린이실, 디지털자료실: 평일 09~18시, 주말 09~17시",
+			"종합자료실: 평일 09~20시, 주말 09~17시 어린이실, 디지털자료실: 평일 09~18시, 주말 09~교육청",
 		district: "도봉구",
 		distance: 0,
 	},
@@ -2246,7 +2246,7 @@ export const libInfoSeoul = [
 		homepage: "http://ddmlib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 수요일 / 일요일을 제외한 법정공휴일, 휴관이 필요하다고 인정하는 날",
 		operatingTime: "07:00~22:00(하절기) 08:00~22:00(동절기)",
-		district: "동대문구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2259,7 +2259,7 @@ export const libInfoSeoul = [
 		homepage: "http://djlib.sen.go.kr/",
 		closed: "매월 두번째, 네번째 금요일",
 		operatingTime: "-",
-		district: "동작구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2272,7 +2272,7 @@ export const libInfoSeoul = [
 		homepage: "http://mpllc.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 월요일 / 법정공휴일, 휴관이 필요하다고 인정하는 날",
 		operatingTime:
-			"자료실 : 평일 9~18시(문헌정보실은 20시), 주말 9~17시 / 학습실 : 11월~2월은 8시~22시(평일, 주말) 3월~10월은 7시~22시(평일, 주말)",
+			"자료실 : 평일 9~18시(문헌정보실은 20시), 주말 9~17시 / 학습실 : 11월~2월은 8시~22시(평일, 주말) 3월~10월은 7시~22시(평일, 주말교육청",
 		district: "마포구",
 		distance: 0,
 	},
@@ -2286,7 +2286,7 @@ export const libInfoSeoul = [
 		homepage: "http://ahyon.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 월요일 / 일요일을 제외한 법정공휴일, 기타의 사유로 휴관일 필요하다고 인정하는 날",
 		operatingTime: "07:00-22:00",
-		district: "마포구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2299,7 +2299,7 @@ export const libInfoSeoul = [
 		homepage: "http://sdmlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 화요일 / 일요일을 제외한 법정공휴일 / 도서관 사정으로 임시로 정하는 휴일",
 		operatingTime: "평일·주말 07:00 ~ 22:00 (동절기 11월~2월 08:00 ~ 22:00 운영)",
-		district: "서대문구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2312,7 +2312,7 @@ export const libInfoSeoul = [
 		homepage: "http://childlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 월요일 / 일요일을 제외한 법정공휴일, 도서관 사정으로 임시로 정하는 휴일",
 		operatingTime: "평일 09:00~18:00, 주말 09:00~17:00",
-		district: "종로구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2325,7 +2325,7 @@ export const libInfoSeoul = [
 		homepage: "https://splib.sen.go.kr/",
 		closed: "매월 두번째, 네번째 화요일 / 법정공휴일, 기타 도서관 필요에 의해 정하는 날",
 		operatingTime:
-			"인문사회과학실 · 어학문학실(연속간행물실) [평일] 09:00~20:00 [주말] 09:00~17:00 / 어린이실 · 디지털자료실 [평일] 09:00~18:00 [주말] 09:00~17:00 / 일반열람실  07:00~22:00(단, 11월~2월 08:00~22:00)",
+			"인문사회과학실 · 어학문학실(연속간행물실) [평일] 09:00~20:00 [주말] 09:00~17:00 / 어린이실 · 디지털자료실 [평일] 09:00~18:00 [주말] 09:00~17:00 / 일반열람실  07:00~22:00(단, 11월~2월 08:00~22:00교육청",
 		district: "송파구",
 		distance: 0,
 	},
@@ -2339,7 +2339,7 @@ export const libInfoSeoul = [
 		homepage: "http://yclib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 목요일 / 일요일을 제외한 법정공휴일, 도서관 사정으로 임시로 정하는 휴일",
 		operatingTime: "하절기 07:00~22:00, 동절기 08:00~22:00",
-		district: "양천구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2352,7 +2352,7 @@ export const libInfoSeoul = [
 		homepage: "http://ydpllc.sen.go.kr/",
 		closed: "매월 두번째, 네번째 월요일 / 법정공휴일, 휴관이 필요하다고 인정하는 날",
 		operatingTime:
-			"자료실 : 평일 9~18시(문헌정보실은 20시), 주말 9~17시 / 학습실 : 11월~2월은 8시~22시(평일, 주말) 3월~10월은 7시~22시(평일, 주말)",
+			"자료실 : 평일 9~18시(문헌정보실은 20시), 주말 9~17시 / 학습실 : 11월~2월은 8시~22시(평일, 주말) 3월~10월은 7시~22시(평일, 주말교육청",
 		district: "영등포구",
 		distance: 0,
 	},
@@ -2366,7 +2366,7 @@ export const libInfoSeoul = [
 		homepage: "http://yslib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 화요일 / 법정공휴일, 기타 사정으로 도서관장이 정한 날",
 		operatingTime:
-			"문헌정보실 : 평일 09:00~20:00, 토·일 09:00~17:00 / 디지털간행물실, 어린이실 : 평일 09:00~18:00, 토·일 09:00~17:00 / 자율학습실 : 3월~10월(하절기) 07:00~22:00 / 11월~2월(동절기) 08:00~22:00",
+			"문헌정보실 : 평일 09:00~20:00, 토·일 09:00~17:00 / 디지털간행물실, 어린이실 : 평일 09:00~18:00, 토·일 09:00~17:00 / 자율학습실 : 3월~10월(하절기) 07:00~22:00 / 11월~2월(동절기) 08:00~22:교육청",
 		district: "용산구",
 		distance: 0,
 	},
@@ -2380,7 +2380,7 @@ export const libInfoSeoul = [
 		homepage: "http://jdlib.sen.go.kr/",
 		closed: "매월 첫째주, 셋째주 수요일 / 일요일을 제외한 법정공휴일, 도서관 사정으로 임시로 정하는 휴일",
 		operatingTime: "3월~10월(하절기): 7:00 - 22:00 / 11월~2월(동절기): 8:00 - 22:00",
-		district: "종로구",
+		district: "교육청",
 		distance: 0,
 	},
 	{
@@ -2393,7 +2393,7 @@ export const libInfoSeoul = [
 		homepage: "http://jnlib.sen.go.kr/",
 		closed: "매월 둘째주, 넷째주 월요일 / 법정공휴일, 도서관 운영상 도서관장이 필요하다고 지정한 날",
 		operatingTime:
-			"어문학실, 인문사회과학실 09시~20시(평일), 09시~17시(주말) / 자연과학정보실 09시~20시(평일), 09시~17시(주말) / 인왕관 09시~18시(평일), 주말은 운영안함./ 자율학습실 07시~22시(3~10월 평일,주말), 08시~22시(11~2월 평일,주말)",
+			"어문학실, 인문사회과학실 09시~20시(평일), 09시~17시(주말) / 자연과학정보실 09시~20시(평일), 09시~17시(주말) / 인왕관 09시~18시(평일), 주말은 운영안함./ 자율학습실 07시~22시(3~10월 평일,주말), 08시~22시(11~2월 평일,주말교육청",
 		district: "종로구",
 		distance: 0,
 	},

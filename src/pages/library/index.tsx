@@ -1,7 +1,7 @@
 import { Box, Flex, Text, Image, Icon, Button, Grid, GridItem } from "@chakra-ui/react";
 import Select, { components, OptionProps } from "react-select";
 import NavBar from "@/components/navbar";
-import { libInfoSeoul } from "./lib-info-seoul";
+import { libInfoSeoul } from "../../hooks/store/rawdata/lib-info-seoul";
 import useLibStore from "@/hooks/store/lib";
 import { useEffect, useState } from "react";
 import { IoMdLocate } from "react-icons/io";
@@ -231,13 +231,13 @@ export function SelectSearch({
 			value={selectedOptions}
 			onChange={(valArr) => setSelectedOptions(valArr.map((v) => v))}
 			options={availableOptions}
-			getOptionValue={(option) => option.district + option.libName}
+			getOptionValue={(option) => option.libCode}
 			getOptionLabel={(option) => option.libName}
 			isMulti
 			isClearable={false}
-			components={{ Option: Option }}
+			backspaceRemovesValue={false}
 			controlShouldRenderValue={false}
-			hideSelectedOptions={false}
+			components={{ Option: Option }}
 			placeholder={placeHolder || ""}
 			noOptionsMessage={() => "검색 결과가 없습니다."}
 			styles={{
@@ -248,9 +248,9 @@ export function SelectSearch({
 				}),
 				control: (base) => ({
 					...base,
-					"&:hover": { borderColor: "gray" }, // border style on hover
-					border: "1px solid lightgray", // default border color
-					boxShadow: "none", // no box-shadow
+					"&:hover": { borderColor: "gray" }, 
+					border: "1px solid lightgray", 
+					boxShadow: "none", 
 					cursor: "text",
 				}),
 				menu: (base) => ({
@@ -259,7 +259,6 @@ export function SelectSearch({
 				}),
 				menuList: (base) => ({
 					...base,
-
 					maxHeight: "400px",
 					paddingInline: 0,
 					overflow: "scroll",
