@@ -9,7 +9,11 @@ import {
 	GridItem,
 	Image,
 	Button,
+	Spinner,
+	VStack,
+	Center
 } from "@chakra-ui/react";
+
 import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
@@ -18,12 +22,24 @@ import { DrawerBottom } from "@/components/drawer-bottom";
 import SelectSearch from "@/components/select-search";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
-import { useSearchKeywordStore } from "@/hooks/store/search";
+import { useSearchKeywordStore as useRecentSearchKeywordStore } from "@/hooks/store/search";
 import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
-import bookResultFromApi from "./mock-data";
+
 import ImageCover from "@/components/image-cover";
 import { BookInfo } from "@/hooks/store/bookmark";
+import useSWR from "swr";
+
+type SearchResult = {
+	isbn: string;
+	title: string;
+	author: string;
+	publisher: string;
+	publicationYear: string;
+	imageUrl: string;
+	score: number;
+};
+
 export default function Page() {
 	return (
 		<Flex
@@ -44,7 +60,7 @@ export default function Page() {
 }
 
 function SearchBar() {
-	const { addKeyword } = useSearchKeywordStore();
+	const { addKeyword } = useRecentSearchKeywordStore();
 	const { handleRedirect, removeUrl, searchParams } = useBookSearch();
 	const [search, setSearch] = useState<string>("");
 	const navigate = useNavigate();
@@ -69,7 +85,7 @@ function SearchBar() {
 		setSearch("");
 		removeUrl();
 	};
-	const keyword = searchParams.get("keyword");
+	const keyword = searchParams.get("q");
 	const placeholder = keyword ? `${showMaxString(keyword)}에 대한 검색 결과` : "검색하기";
 
 	return (
@@ -109,30 +125,65 @@ function SearchBar() {
 	);
 }
 
+class FetchError extends Error {
+	info?: any;
+	status?: number;
+
+	constructor(message: string) {
+		super(message);
+		this.name = "FetchError";
+	}
+}
+
+const fetcher = async (url: string) => {
+	const res = await fetch(url);
+	if (!res.ok) {
+		const error = new FetchError("An error occurred while fetching the data.");
+		// Attach extra info to the error object.
+		error.info = res.json();
+		error.status = res.status;
+		throw error;
+	}
+
+	return res.json();
+};
+
 function MainBox() {
 	const [schParams, _] = useSearchParams(new URLSearchParams(window.location.search));
-	const keyword = schParams.get("keyword");
+	const keyword = schParams.get("q");
+	const libCode = schParams.get("libCode");
 
+	const searchUrl = new URL("search/normal", import.meta.env.VITE_BACKEND_API);
+	searchUrl.searchParams.set("q", keyword || ""); 
+	searchUrl.searchParams.set("libCode", libCode || "");
+
+	
+	const { data, error, isLoading } = useSWR<SearchResult[]>(
+		keyword && libCode ? searchUrl.toString() : null, 
+		(url: string) => fetcher(url)
+	);
+
+	
 	return (
 		<Flex flexGrow={1} direction={"column"} mx={5} pb={5}>
-			{keyword ? (
-				<>
-					{/* <Flex justifyContent={"center"} width={"100%"} py={4} px={4}>
-						<Text fontSize={"lg"}>{showMaxString(keyword)}에 대한 검색 결과</Text>
-					</Flex> */}
-					<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
-						{bookResultFromApi.map((result) => (
+			{!keyword || !libCode ? (
+				<RecentKeyword />
+			) : isLoading ? (
+				<Loading />
+			) : error || !data ? (
+				<>페이지를 찾을 수 없습니다.</>
+			) : (
+				<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
+					{data
+						.toSorted((a, b) => b.score - a.score)
+						.map((result) => (
 							<BookCard key={result.isbn} result={result} />
 						))}
-					</Grid>
-				</>
-			) : (
-				<RecentKeyword />
+				</Grid>
 			)}
 		</Flex>
 	);
 }
-
 function BookCard({ result }: { result: BookInfo }) {
 	return (
 		<GridItem>
@@ -160,26 +211,19 @@ function BookCard({ result }: { result: BookInfo }) {
 	);
 }
 
-// const useBookSearch = ()=>{
-// 	const [searchParams,setSearchParams] = useSearchParams(new URLSearchParams(window.location.search))
-// 	const libs = useLibStore((state) => state.libArr);
 
-// 	const handleRedirect = (keyword: string) => {
-// 		setSearchParams((prev) => {
-// 			prev.set("keyword", keyword);
-// 			return prev;
-// 		  })
-// 		setSearchParams((prev) => {
-// 			prev.set("libs", libs.map((v) => v.value).join());
-// 			return prev;
-// 		  })
 
-// 	};
-// 	const removeUrl = ()=>{
-// 		setSearchParams(new URLSearchParams)
-// 	}
-// 	return {handleRedirect,removeUrl,searchParams}
-// }
+const Loading = () => {
+  return (
+	<Center flexGrow={1}>
+    <VStack>
+      <Spinner />
+      <Text>검색중...</Text>
+    </VStack>
+	</Center>
+  )
+}
+
 
 const useBookSearch = () => {
 	const [searchParams] = useSearchParams();
@@ -187,8 +231,8 @@ const useBookSearch = () => {
 	const libs = useLibStore((state) => state.selectedLibs);
 	const url = new URL(window.location.href);
 	const handleRedirect = (keyword: string) => {
-		url.searchParams.set("keyword", keyword);
-		url.searchParams.set("libs", libs.map((v) => v.value).join());
+		url.searchParams.set("q", keyword);
+		url.searchParams.set("libCode", libs.map((v) => v.value).join());
 		navigate(url.search, { replace: true });
 	};
 	const removeUrl = () => {
@@ -198,15 +242,15 @@ const useBookSearch = () => {
 };
 
 function RecentKeyword() {
-	const { RecentKeywords, removeKeyword } = useSearchKeywordStore();
+	const { RecentKeywords, removeKeyword } = useRecentSearchKeywordStore();
 	const { handleRedirect } = useBookSearch();
 	return (
 		<Box>
 			<Text>최근 검색어</Text>
-			{RecentKeywords.map((keyword, idx) => (
-				<Flex key={keyword + idx} _hover={{ bg: "gray.100" }}>
+			{RecentKeywords.map((keyword) => (
+				<Flex key={keyword.id} _hover={{ bg: "gray.100" }}>
 					<Button
-						onClick={() => handleRedirect(keyword)}
+						onClick={() => handleRedirect(keyword.keyword)}
 						variant="plain"
 						px={0}
 						flexGrow={1}
@@ -215,7 +259,7 @@ function RecentKeyword() {
 						<Icon>
 							<GoHistory />
 						</Icon>
-						<Text>{keyword}</Text>
+						<Text>{keyword.keyword}</Text>
 					</Button>
 					<CloseButton onClick={() => removeKeyword(keyword)} variant="plain" size="md" />
 				</Flex>
