@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export type LibBook = {
+	libCode: number;
+	classNum: string;
+	bookCode: string;
+};
+
 export type BookInfo = {
 	isbn: string;
 	title: string;
@@ -8,6 +14,9 @@ export type BookInfo = {
 	publisher: string;
 	publicationYear: string;
 	imageUrl: string;
+	toc: string;
+	desc?: string;
+	libBooks: LibBook[];
 };
 // export type BookLibInfo = {
 // 	libCode: string;
@@ -18,7 +27,7 @@ export type BookInfo = {
 export interface BookMarkState {
 	bookMarkList: BookInfo[];
 	toggleBookMark: (book: BookInfo) => void;
-	checkBookMarked: (book: BookInfo) => boolean;
+	checkBookMarked: (isbn: string) => boolean;
 }
 
 export const useBookMarkStore = create<BookMarkState>()(
@@ -33,7 +42,7 @@ export const useBookMarkStore = create<BookMarkState>()(
 						};
 					}
 					return {
-						bookMarkList: state.checkBookMarked(book)
+						bookMarkList: state.checkBookMarked(book.isbn)
 							? _deleteBookMark(state.bookMarkList, book)
 							: _addBookMark(state.bookMarkList, book),
 					};
@@ -46,12 +55,12 @@ export const useBookMarkStore = create<BookMarkState>()(
 				}));
 			},
 
-			checkBookMarked: (book: BookInfo) => {
+			checkBookMarked: (isbn: string) => {
 				const bookMarkList = get().bookMarkList;
 				if (bookMarkList.length === 0) {
 					return false;
 				}
-				const isExist = bookMarkList.find((b) => b.isbn === book.isbn);
+				const isExist = bookMarkList.find((b) => b.isbn === isbn);
 				return isExist ? true : false;
 			},
 		}),

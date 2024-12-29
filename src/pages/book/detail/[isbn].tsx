@@ -4,7 +4,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
 import { toaster } from "@/components/ui/toaster";
-import useBookMarkStore, { BookInfo } from "@/hooks/store/bookmark";
+import useBookMarkStore, { BookInfo, LibBook } from "@/hooks/store/bookmark";
 import { format } from "date-fns";
 import ImageCover from "@/components/image-cover";
 import { SubTitle } from "@/components/text";
@@ -20,27 +20,16 @@ import {
 } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
+import { useSearchParams } from "react-router";
 
 type BookDetailReq = {
 	isbn: string;
 	libCodes: string[];
 };
 
-type LibBook = {
-	libCode: number;
-	classNum: string;
-	bookCode: string;
-};
-
 export interface LibBookStatus extends LibBook {
 	libName: string;
 	bookStatus?: string;
-}
-
-export interface BookDetail extends BookInfo {
-	toc: string;
-	desc?: string;
-	libBooks: LibBook[];
 }
 
 class FetchError extends Error {
@@ -75,9 +64,25 @@ const fetcher = async (path: string, body: BookDetailReq) => {
 export default function Page() {
 	const { isbn } = useParams();
 	const { selectedLibs } = useLibStore();
-	const reqBody: BookDetailReq = { isbn: isbn!, libCodes: selectedLibs.map((v) => v.value) };
-	const { data, error, isLoading } = useSWR<BookDetail>("/book/detail", (url: string) =>
-		fetcher(url, reqBody)
+	const { bookMarkList } = useBookMarkStore();
+	const [srchParams] = useSearchParams();
+
+	const pageType = srchParams.get("type");
+	const reqBody: BookDetailReq = {
+		isbn: isbn!,
+		libCodes:
+			pageType === "bookmark"
+				? bookMarkList
+						.find((b) => b.isbn === isbn)
+						?.libBooks.map((v) => v.libCode.toString()) || []
+				: selectedLibs.map((v) => v.value),
+	};
+
+	console.log(reqBody);
+
+	const { data, error, isLoading } = useSWR<BookInfo>(
+		reqBody.isbn === undefined || reqBody.libCodes.length === 0 ? null: "/book/detail" ,
+		(url: string) => fetcher(url, reqBody)
 	);
 
 	if (isLoading) {
@@ -100,7 +105,7 @@ export default function Page() {
 		</Box>
 	) : null;
 }
-function SearchBarMock({ bookDetail }: { bookDetail?: BookDetail }) {
+function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
 	return (
 		<Flex my={1} justifyContent={"space-between"} alignItems={"center"}>
 			<BackButton />
@@ -109,21 +114,28 @@ function SearchBarMock({ bookDetail }: { bookDetail?: BookDetail }) {
 	);
 }
 
-function BookMarkButton({ bookDetail }: { bookDetail: BookDetail }) {
+function BookMarkButton({ bookDetail }: { bookDetail: BookInfo }) {
 	const { checkBookMarked, toggleBookMark } = useBookMarkStore();
+	const [srchParams] = useSearchParams();
 
-	const isBookMarked = checkBookMarked(bookDetail);
+	const navigate = useNavigate();
+
+	const isBookMarked = checkBookMarked(bookDetail.isbn);
 	const handleOnclick = () => {
 		toggleBookMark(bookDetail);
 		!isBookMarked &&
 			toaster.create({
 				title: "북마크에 저장하였습니다.",
 			});
+		if (srchParams.get("type") === "bookmark") {
+			navigate("/bookmark");
+		}
 	};
+
 	return (
 		<Box pr={3} cursor={"pointer"}>
 			<Center w={7} aspectRatio={"1/1"} rounded={3} onClick={() => handleOnclick()}>
-				<Icon size={"lg"} color={"gray"}>
+				<Icon size={"lg"} color={"GrayText"}>
 					{isBookMarked ? <FaBookmark /> : <FaRegBookmark />}
 				</Icon>
 			</Center>
@@ -131,7 +143,7 @@ function BookMarkButton({ bookDetail }: { bookDetail: BookDetail }) {
 	);
 }
 
-function BookCard({ bookInfo }: { bookInfo: BookDetail }) {
+function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Flex spaceX={4}>
 			<Flex basis={"1/4"}>
@@ -149,8 +161,8 @@ function BookCard({ bookInfo }: { bookInfo: BookDetail }) {
 					/>
 				</ImageCover>
 			</Flex>
-			<Flex basis={"2/4"} direction={"column"} color={"gray"} fontSize={"sm"}>
-				<Text color={"black"} fontSize={"lg"}>
+			<Flex basis={"2/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
+				<Text color={"HighlightText"}  fontWeight={600} fontSize={"lg"}>
 					{bookInfo.title}
 				</Text>
 				<Text>{bookInfo.author}</Text>
@@ -174,8 +186,8 @@ function Toc({ text }: { text: string }) {
 }
 
 function BorrowStatus({ data }: { data: LibBook[] }) {
-	const { liCodes: libCode } = useLibStore();
-	const LibBookStatus = data.map((b) => ({ ...b, libName: libCode[b.libCode]?.libName }));
+	const { libCodes } = useLibStore();
+	const LibBookStatus = data.map((b) => ({ ...b, libName: libCodes[b.libCode]?.libName }));
 
 	const readableDate = format(Date.now(), "yy/MM/dd HH:mm:ss");
 
@@ -183,7 +195,7 @@ function BorrowStatus({ data }: { data: LibBook[] }) {
 		<Box spaceY={2}>
 			<Flex justifyContent={"space-between"} alignItems={"center"}>
 				<SubTitle>대여정보</SubTitle>
-				<Text fontSize={"xs"} color={"gray"}>
+				<Text fontSize={"xs"} color={"GrayText"}>
 					업데이트 : {readableDate}
 				</Text>
 			</Flex>

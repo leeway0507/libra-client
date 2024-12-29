@@ -41,9 +41,8 @@ function BookMarkList() {
 }
 
 function BookMarkCard({ bookInfo }: { bookInfo: BookInfo }) {
-	const { toggleBookMark } = useBookMarkStore();
 	return (
-		<Link to={`/book/detail/${bookInfo.isbn}`}>
+		<Link to={`/book/detail/${bookInfo.isbn}?type=bookmark`}>
 			<Flex spaceX={4}>
 				<Flex basis={"1/5"}>
 					<ImageCover>
@@ -60,8 +59,8 @@ function BookMarkCard({ bookInfo }: { bookInfo: BookInfo }) {
 						/>
 					</ImageCover>
 				</Flex>
-				<Flex basis={"3/5"} direction={"column"} fontSize={"sm"} color={"gray"}>
-					<Text fontSize={"md"} color={"black"}>
+				<Flex basis={"3/5"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
+					<Text fontSize={"md"} fontWeight={600} color={"HighlightText"}>
 						{bookInfo.title}
 					</Text>
 					<Text>{bookInfo.author}</Text>
