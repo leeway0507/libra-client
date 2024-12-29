@@ -1,19 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type BookSearchResult = {
-	isbn: string;
-	title: string;
-	author: string;
-	publisher: string;
-	publicationYear: string;
-	imageUrl: string;
-	libCode: string[];
-};
+import { BookInfo } from "./bookmark";
 
 export type SearchProps = {
 	keyword: string;
-	bookResult: BookSearchResult[];
+	bookResult: BookInfo[];
 };
 
 export interface BookResultState {

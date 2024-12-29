@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type BookMark = {
+export type BookInfo = {
 	isbn: string;
 	title: string;
 	author: string;
@@ -16,16 +16,16 @@ export type BookMark = {
 // };
 
 export interface BookMarkState {
-	bookMarkList: BookMark[];
-	toggleBookMark: (book: BookMark) => void;
-	checkBookMarked: (book: BookMark) => boolean;
+	bookMarkList: BookInfo[];
+	toggleBookMark: (book: BookInfo) => void;
+	checkBookMarked: (book: BookInfo) => boolean;
 }
 
 export const useBookMarkStore = create<BookMarkState>()(
 	persist(
 		(set, get) => ({
 			bookMarkList: [],
-			toggleBookMark: (book: BookMark) => {
+			toggleBookMark: (book: BookInfo) => {
 				set((state) => {
 					if (state.bookMarkList.length === 0) {
 						return {
@@ -40,13 +40,13 @@ export const useBookMarkStore = create<BookMarkState>()(
 				});
 			},
 
-			_deleteBook: (book: BookMark) => {
+			_deleteBook: (book: BookInfo) => {
 				set((state) => ({
 					bookMarkList: state.bookMarkList.filter((b) => b.isbn !== book.isbn),
 				}));
 			},
 
-			checkBookMarked: (book: BookMark) => {
+			checkBookMarked: (book: BookInfo) => {
 				const bookMarkList = get().bookMarkList;
 				if (bookMarkList.length === 0) {
 					return false;
@@ -60,9 +60,9 @@ export const useBookMarkStore = create<BookMarkState>()(
 		}
 	)
 );
-const _deleteBookMark = (bookMarkList: BookMark[], book: BookMark) =>
+const _deleteBookMark = (bookMarkList: BookInfo[], book: BookInfo) =>
 	bookMarkList.filter((b) => b.isbn !== book.isbn);
-const _addBookMark = (bookMarkList: BookMark[], book: BookMark) => [book, ...bookMarkList];
+const _addBookMark = (bookMarkList: BookInfo[], book: BookInfo) => [book, ...bookMarkList];
 
 // {
 // 	b.libInfo = b.libInfo.filter(l=>l.libCode ===libCode )
