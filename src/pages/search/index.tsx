@@ -11,7 +11,7 @@ import {
 	Button,
 	Spinner,
 	VStack,
-	Center
+	Center,
 } from "@chakra-ui/react";
 
 import React, { useState } from "react";
@@ -27,7 +27,6 @@ import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
 
 import ImageCover from "@/components/image-cover";
-import { BookInfo } from "@/hooks/store/bookmark";
 import useSWR from "swr";
 
 type SearchResult = {
@@ -98,7 +97,7 @@ function SearchBar() {
 				px={0}
 				onClick={goBack}
 			>
-				<Icon mx={"auto"} size={"lg"} color={"gray"}>
+				<Icon mx={"auto"} size={"lg"} color={"GrayText"}>
 					<IoIosArrowBack />
 				</Icon>
 			</Button>
@@ -116,7 +115,7 @@ function SearchBar() {
 			/>
 			{search.length > 0 ? (
 				<Button position={"absolute"} right={0} variant="plain" onClick={handleClose}>
-					<Icon size={"xl"} color={"gray"}>
+					<Icon size={"xl"} color={"GrayText"}>
 						<IoIosClose />
 					</Icon>
 				</Button>
@@ -154,16 +153,14 @@ function MainBox() {
 	const libCode = schParams.get("libCode");
 
 	const searchUrl = new URL("search/normal", import.meta.env.VITE_BACKEND_API);
-	searchUrl.searchParams.set("q", keyword || ""); 
+	searchUrl.searchParams.set("q", keyword || "");
 	searchUrl.searchParams.set("libCode", libCode || "");
 
-	
 	const { data, error, isLoading } = useSWR<SearchResult[]>(
-		keyword && libCode ? searchUrl.toString() : null, 
+		keyword && libCode ? searchUrl.toString() : null,
 		(url: string) => fetcher(url)
 	);
 
-	
 	return (
 		<Flex flexGrow={1} direction={"column"} mx={5} pb={5}>
 			{!keyword || !libCode ? (
@@ -184,7 +181,7 @@ function MainBox() {
 		</Flex>
 	);
 }
-function BookCard({ result }: { result: BookInfo }) {
+function BookCard({ result }: { result: SearchResult }) {
 	return (
 		<GridItem>
 			<Link to={`/book/detail/${result.isbn}`}>
@@ -202,28 +199,26 @@ function BookCard({ result }: { result: BookInfo }) {
 						bgColor={"gray.50"}
 					/>
 				</ImageCover>
-				<Flex direction={"column"} fontSize={"sm"} color={"gray"}>
-					<Text>{result.title}</Text>
+				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
+					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"}>{result.title}</Text>
 					<Text>{result.author}</Text>
+					<Text>{result.publicationYear}</Text>
 				</Flex>
 			</Link>
 		</GridItem>
 	);
 }
 
-
-
 const Loading = () => {
-  return (
-	<Center flexGrow={1}>
-    <VStack>
-      <Spinner />
-      <Text>검색중...</Text>
-    </VStack>
-	</Center>
-  )
-}
-
+	return (
+		<Center flexGrow={1}>
+			<VStack>
+				<Spinner />
+				<Text>검색중...</Text>
+			</VStack>
+		</Center>
+	);
+};
 
 const useBookSearch = () => {
 	const [searchParams] = useSearchParams();
@@ -295,7 +290,7 @@ function OptionBox() {
 								<Text
 									my={10}
 									textAlign={"center"}
-									color={"gray"}
+									color={"GrayText"}
 									textDecoration={"underline"}
 								>
 									하나 이상의 도서관을 선택하세요.

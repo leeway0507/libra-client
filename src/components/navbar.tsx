@@ -29,7 +29,7 @@ function Item({ to, name, icon }: { to: string; name: string; icon: React.ReactN
 			gap={0}
 			w={"100%"}
 			focusRing={"none"}
-			color={"gray"}
+			color={"GrayText"}
 			_hover={{
 				textDecoration: "none",
 			}}

@@ -10,11 +10,11 @@ export default function SearchBarMock() {
 				px={0}
 				my={1}
 				height={"10"}
-				color={"gray"}
+				color={"GrayText"}
 				borderBottomWidth={1}
 			>
 				<Button variant="plain" position={"absolute"} zIndex={1} px={0}>
-					<Icon mx={"auto"} size={"md"} color={"gray"}>
+					<Icon mx={"auto"} size={"md"} color={"GrayText"}>
 						<IoIosSearch />
 					</Icon>
 				</Button>

@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BookInfo } from "./bookmark";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
 
 export type SearchProps = {
 	keyword: string;
@@ -10,9 +9,9 @@ export type SearchProps = {
 };
 
 export type Keyword = {
-	id: string
-	keyword: string
-}
+	id: string;
+	keyword: string;
+};
 
 export interface BookResultState {
 	bookResult: SearchProps;
@@ -42,7 +41,7 @@ export const useSearchKeywordStore = create<RecentSearchKeywordState>()(
 			RecentKeywords: [],
 			addKeyword: (keyword) => {
 				set((state) => ({
-					RecentKeywords: [{id:uuidv4(),keyword}, ...state.RecentKeywords],
+					RecentKeywords: [{ id: uuidv4(), keyword }, ...state.RecentKeywords],
 				}));
 			},
 			removeKeyword: (keyword) => {
