@@ -200,7 +200,9 @@ function BookCard({ result }: { result: SearchResult }) {
 					/>
 				</ImageCover>
 				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
-					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"}>{result.title}</Text>
+					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"}>
+						{result.title}
+					</Text>
 					<Text>{result.author}</Text>
 					<Text>{result.publicationYear}</Text>
 				</Flex>
