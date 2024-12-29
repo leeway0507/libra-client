@@ -78,10 +78,9 @@ export default function Page() {
 				: selectedLibs.map((v) => v.value),
 	};
 
-	console.log(reqBody);
 
 	const { data, error, isLoading } = useSWR<BookInfo>(
-		reqBody.isbn === undefined || reqBody.libCodes.length === 0 ? null: "/book/detail" ,
+		reqBody.isbn === undefined || reqBody.libCodes.length === 0 ? null : "/book/detail",
 		(url: string) => fetcher(url, reqBody)
 	);
 
@@ -162,7 +161,7 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 				</ImageCover>
 			</Flex>
 			<Flex basis={"2/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
-				<Text color={"HighlightText"}  fontWeight={600} fontSize={"lg"}>
+				<Text color={"HighlightText"} fontWeight={600} fontSize={"lg"}>
 					{bookInfo.title}
 				</Text>
 				<Text>{bookInfo.author}</Text>
