@@ -1,35 +1,51 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+import { libCodeAsKey } from "./rawdata/libcode";
 export type LibProps = {
 	value: string;
 	label: string;
 };
 
+type libCodeProps = {
+	district: string;
+	libName: string;
+};
+
 export interface LibState {
-	libArr: LibProps[];
+	liCodes: {
+		[key: string]: libCodeProps;
+	};
+	defaultLibs: LibProps[];
+	selectedLibs: LibProps[];
 	addLib: (lib: LibProps) => void;
 	changeLibs: (libs: LibProps[]) => void;
-	removeLib: (lib: LibProps) => void;
+	removeLib: (libCode: string) => void;
 }
+
+const defaultLibs = Object.entries(libCodeAsKey).map(([libCode, value]) => ({
+	value: libCode,
+	label: value.libName,
+}));
 
 const useLibStore = create<LibState>()(
 	persist(
 		(set) => ({
-			libArr: [],
+			selectedLibs: [],
+			defaultLibs: defaultLibs,
+			liCodes: libCodeAsKey,
 			addLib: (lib: LibProps) => {
 				set((state) => ({
-					libArr: [...state.libArr, lib],
+					selectedLibs: [...state.selectedLibs, lib],
 				}));
 			},
 			changeLibs: (libs: LibProps[]) => {
 				set(() => ({
-					libArr: libs,
+					selectedLibs: libs,
 				}));
 			},
-			removeLib: (lib: LibProps) => {
+			removeLib: (libCode) => {
 				set((state) => ({
-					libArr: state.libArr.filter((l) => l.value === lib.value),
+					selectedLibs: state.selectedLibs.filter((l) => l.value !== libCode),
 				}));
 			},
 		}),
