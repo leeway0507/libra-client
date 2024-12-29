@@ -18,18 +18,25 @@ import { DrawerBottom } from "@/components/drawer-bottom";
 import SelectSearch from "@/components/select-search";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
-import { BookSearchResult, useSearchKeywordStore } from "@/hooks/store/search";
+import { useSearchKeywordStore } from "@/hooks/store/search";
 import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
 import bookResultFromApi from "./mock-data";
 import ImageCover from "@/components/image-cover";
+import { BookInfo } from "@/hooks/store/bookmark";
 export default function Page() {
 	return (
-		<Flex direction="column" position={"relative"} minHeight={"100vh"} bgColor={"white"} spaceY={4}>
+		<Flex
+			direction="column"
+			position={"relative"}
+			minHeight={"100vh"}
+			bgColor={"white"}
+			spaceY={4}
+		>
 			<Box position={"sticky"} top={0} bgColor={"Background"} zIndex={5}>
 				<SearchBar />
 			</Box>
-			{/* <OptionBox /> */}
+			<OptionBox />
 			<MainBox />
 			<NavBar />
 		</Flex>
@@ -114,8 +121,8 @@ function MainBox() {
 						<Text fontSize={"lg"}>{showMaxString(keyword)}에 대한 검색 결과</Text>
 					</Flex> */}
 					<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
-						{bookResultFromApi.map((b) => (
-							<BookCard result={b} />
+						{bookResultFromApi.map((result) => (
+							<BookCard key={result.isbn} result={result} />
 						))}
 					</Grid>
 				</>
@@ -126,7 +133,7 @@ function MainBox() {
 	);
 }
 
-function BookCard({ result }: { result: BookSearchResult }) {
+function BookCard({ result }: { result: BookInfo }) {
 	return (
 		<GridItem>
 			<Link to={`/book/detail/${result.isbn}`}>
@@ -177,7 +184,7 @@ function BookCard({ result }: { result: BookSearchResult }) {
 const useBookSearch = () => {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
-	const libs = useLibStore((state) => state.libArr);
+	const libs = useLibStore((state) => state.selectedLibs);
 	const url = new URL(window.location.href);
 	const handleRedirect = (keyword: string) => {
 		url.searchParams.set("keyword", keyword);
@@ -222,31 +229,61 @@ const showMaxString = (str: string) => {
 };
 
 function OptionBox() {
-	const defaultLibs = [
-		{ value: "111005", label: "서울특별시교육청양천도서관" },
-		{ value: "111015", label: "서울특별시교육청강서도서관" },
-		{ value: "111025", label: "서울특별시교육청구로도서관" },
-		{ value: "11105", label: "서울특별시교육청금천도서관" },
-	];
-	const libs = useLibStore((state) => state.libArr);
-	const setSelectedOptions = useLibStore((state) => state.changeLibs);
+	const { defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
 	return (
 		<Box>
 			<DrawerBottom buttonName="도서관" titleName="필터">
-				<Box>
+				<Box height={"96"}>
 					{/* {JSON.stringify(libs)} */}
-					{libs !== undefined && (
+					{selectedLibs !== undefined && (
 						<SelectSearch
 							availableOptions={defaultLibs}
-							selectedOptions={libs}
-							setSelectedOptions={setSelectedOptions}
+							selectedOptions={selectedLibs}
+							setSelectedOptions={changeLibs}
 							placeHolder="도서관 검색"
 						/>
 					)}
+
+					<Box my={1}>
+						{selectedLibs.length === 1 ? (
+							<>
+								<OptionItem label={selectedLibs[0].label} />
+								<Text
+									my={10}
+									textAlign={"center"}
+									color={"gray"}
+									textDecoration={"underline"}
+								>
+									하나 이상의 도서관을 선택하세요.
+								</Text>
+							</>
+						) : (
+							selectedLibs.map((v) => (
+								<OptionItem
+									key={v.value}
+									label={v.label}
+									onDelete={() => removeLib(v.value)}
+								/>
+							))
+						)}
+					</Box>
 				</Box>
 			</DrawerBottom>
 		</Box>
 	);
 }
 
-
+function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void }) {
+	return (
+		<Flex
+			justifyContent={"space-between"}
+			alignItems={"center"}
+			_hover={{ bg: "gray.200" }}
+			px={2}
+			height={"10"}
+		>
+			<Text>{label}</Text>
+			{onDelete && <CloseButton variant={"plain"} onClick={onDelete} size={"sm"} />}
+		</Flex>
+	);
+}
