@@ -248,9 +248,9 @@ export function SelectSearch({
 				}),
 				control: (base) => ({
 					...base,
-					"&:hover": { borderColor: "gray" }, 
-					border: "1px solid lightgray", 
-					boxShadow: "none", 
+					"&:hover": { borderColor: "gray" },
+					border: "1px solid lightgray",
+					boxShadow: "none",
 					cursor: "text",
 				}),
 				menu: (base) => ({

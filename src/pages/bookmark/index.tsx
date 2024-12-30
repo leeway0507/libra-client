@@ -60,7 +60,7 @@ function BookMarkCard({ bookInfo }: { bookInfo: BookInfo }) {
 					</ImageCover>
 				</Flex>
 				<Flex basis={"3/5"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
-					<Text fontSize={"md"} fontWeight={600} color={"HighlightText"}>
+					<Text fontSize={"md"} fontWeight={600} color={"HighlightText"} lineClamp={bookInfo.title.length < 2 ? 0 : 2}>
 						{bookInfo.title}
 					</Text>
 					<Text>{bookInfo.author}</Text>

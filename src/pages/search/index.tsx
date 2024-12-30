@@ -200,7 +200,7 @@ function BookCard({ result }: { result: SearchResult }) {
 					/>
 				</ImageCover>
 				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
-					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"}>
+					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"} lineClamp={result.title.length < 2 ? 0 : 2}>
 						{result.title}
 					</Text>
 					<Text>{result.author}</Text>
