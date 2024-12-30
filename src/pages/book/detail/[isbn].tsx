@@ -1,4 +1,4 @@
-import { Box, Text, Icon, Flex, Image, Button, Table, Center, Skeleton } from "@chakra-ui/react";
+import { Box, Text, Icon, Flex, Image, Button, Table, Center } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa6";
@@ -53,7 +53,6 @@ const fetcher = async (path: string, body: BookDetailReq) => {
 	});
 	if (!res.ok) {
 		const error = new FetchError("An error occurred while fetching the data.");
-		// Attach extra info to the error object.
 		error.info = res.json();
 		error.status = res.status;
 		throw error;
@@ -91,7 +90,7 @@ export default function Page() {
 		return <NotFoundPage isbn={isbn} />;
 	}
 
-	return data !== undefined ? (
+	return data === undefined ? null : (
 		<Box my={1} bgColor="white">
 			<SearchBarMock bookDetail={data} />
 			<Box mx={4}>
@@ -102,7 +101,7 @@ export default function Page() {
 				</Flex>
 			</Box>
 		</Box>
-	) : null;
+	);
 }
 function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
 	return (
@@ -112,6 +111,20 @@ function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
 		</Flex>
 	);
 }
+function NotFoundPage({ isbn }: { isbn?: string }) {
+	return (
+		<Flex bgColor="white" direction={"column"} h={"100%"}>
+			<SearchBarMock />
+			<Center flexGrow={1}>
+				<EmptyState
+					title={"페이지를 찾을 수 없습니다."}
+					description={isbn && `${isbn}에 대한 결과가 없습니다`}
+				/>
+			</Center>
+		</Flex>
+	);
+}
+
 
 function BookMarkButton({ bookDetail }: { bookDetail: BookInfo }) {
 	const { checkBookMarked, toggleBookMark } = useBookMarkStore();
@@ -146,7 +159,7 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Flex spaceX={4}>
 			<Flex basis={"1/4"}>
-				<ImageCover >
+				<ImageCover>
 					<Image
 						rounded="md"
 						w="100%"
@@ -227,7 +240,7 @@ function BorrowStatusTable({ data: dbData }: { data: LibBookStatus[] }) {
 						<Table.Cell>{item.libName}</Table.Cell>
 						{isLoading ? (
 							<Table.Cell p={0}>
-								<SkeletonText noOfLines={1}  />
+								<SkeletonText noOfLines={1} />
 							</Table.Cell>
 						) : (
 							<Table.Cell>
@@ -289,16 +302,4 @@ function SpecPage({ buttonName, content }: { buttonName: string; content: string
 	);
 }
 
-function NotFoundPage({ isbn }: { isbn?: string }) {
-	return (
-		<Flex bgColor="white" direction={"column"} h={"100%"}>
-			<SearchBarMock />
-			<Center flexGrow={1}>
-				<EmptyState
-					title={"페이지를 찾을 수 없습니다."}
-					description={isbn && `${isbn}에 대한 결과가 없습니다`}
-				/>
-			</Center>
-		</Flex>
-	);
-}
+

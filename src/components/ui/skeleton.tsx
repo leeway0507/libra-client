@@ -11,7 +11,7 @@ export const SkeletonCircle = React.forwardRef<HTMLDivElement, SkeletonCirclePro
 		const { size, ...rest } = props;
 		return (
 			<Circle size={size} asChild ref={ref}>
-				<ChakraSkeleton {...rest as any} />
+				<ChakraSkeleton {...(rest as any)} />
 			</Circle>
 		);
 	}
@@ -30,7 +30,7 @@ export const SkeletonText = React.forwardRef<HTMLDivElement, SkeletonTextProps>(
 					<ChakraSkeleton
 						height="4"
 						key={index}
-						{...props as any}
+						{...(props as any)}
 						_last={{ maxW: "95%" }}
 						{...rest}
 					/>
