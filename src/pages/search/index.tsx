@@ -25,9 +25,11 @@ import NavBar from "@/components/navbar";
 import { useSearchKeywordStore as useRecentSearchKeywordStore } from "@/hooks/store/search";
 import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
+import { BiError } from "react-icons/bi";
 
 import ImageCover from "@/components/image-cover";
 import useSWR from "swr";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type SearchResult = {
 	isbn: string;
@@ -168,7 +170,7 @@ function MainBox() {
 			) : isLoading ? (
 				<Loading />
 			) : error || !data ? (
-				<>페이지를 찾을 수 없습니다.</>
+				<ErrorPage />
 			) : (
 				<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
 					{data
@@ -200,7 +202,12 @@ function BookCard({ result }: { result: SearchResult }) {
 					/>
 				</ImageCover>
 				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
-					<Text fontSize={"sm"} fontWeight={600} color={"HighlightText"} lineClamp={result.title.length < 2 ? 0 : 2}>
+					<Text
+						fontSize={"sm"}
+						fontWeight={600}
+						color={"HighlightText"}
+						lineClamp={result.title.length < 2 ? 0 : 2}
+					>
 						{result.title}
 					</Text>
 					<Text>{result.author}</Text>
@@ -327,4 +334,10 @@ function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void 
 			{onDelete && <CloseButton variant={"plain"} onClick={onDelete} size={"sm"} />}
 		</Flex>
 	);
+}
+
+function ErrorPage(){
+	return <Flex flexGrow={1}>
+		<EmptyState title="에러가 발생했습니다." icon={<BiError/>} description="잠시후 다시 시도해주세요"/>
+	</Flex>
 }
