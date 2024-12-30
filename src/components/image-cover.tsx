@@ -1,9 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 
 export default function ImageCover({ children }: { children: React.ReactNode }) {
 	return (
-		<Box rounded={4} shadow={"md"} mb={1}>
+		<Center rounded={4} shadow={"md"} mb={1} 						w="100%">
 			{children}
-		</Box>
+		</Center>
 	);
 }
