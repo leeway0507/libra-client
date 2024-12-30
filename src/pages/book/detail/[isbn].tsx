@@ -1,4 +1,4 @@
-import { Box, Text, Icon, Flex, Image, Button, Table, Center } from "@chakra-ui/react";
+import { Box, Text, Icon, Flex, Image, Button, Table, Center, Skeleton } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa6";
@@ -21,6 +21,7 @@ import {
 import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
 import { useSearchParams } from "react-router";
+import { SkeletonText } from "@/components/ui/skeleton";
 
 type BookDetailReq = {
 	isbn: string;
@@ -77,7 +78,6 @@ export default function Page() {
 						?.libBooks.map((v) => v.libCode.toString()) || []
 				: selectedLibs.map((v) => v.value),
 	};
-
 
 	const { data, error, isLoading } = useSWR<BookInfo>(
 		reqBody.isbn === undefined || reqBody.libCodes.length === 0 ? null : "/book/detail",
@@ -146,10 +146,9 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Flex spaceX={4}>
 			<Flex basis={"1/4"}>
-				<ImageCover>
+				<ImageCover >
 					<Image
 						rounded="md"
-						aspectRatio={"3/4"}
 						w="100%"
 						fit="contain"
 						src={`/book-img/${3}.jpg`}
@@ -160,8 +159,8 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 					/>
 				</ImageCover>
 			</Flex>
-			<Flex basis={"2/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
-				<Text color={"HighlightText"} fontWeight={600} fontSize={"lg"}>
+			<Flex basis={"3/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
+				<Text color={"HighlightText"} fontWeight={600} fontSize={"md"}>
 					{bookInfo.title}
 				</Text>
 				<Text>{bookInfo.author}</Text>
@@ -176,7 +175,7 @@ function Toc({ text }: { text: string }) {
 	return (
 		<Box spaceY={2}>
 			<SubTitle>목차</SubTitle>
-			<Text lineClamp={text.length < 10 ? 0 : 10} whiteSpace={"pre-wrap"}>
+			<Text lineClamp={text.length < 10 ? 0 : 10} whiteSpace={"pre-wrap"} fontSize={"sm"}>
 				{text}
 			</Text>
 			<SpecPage buttonName="더보기" content={text} />
@@ -203,7 +202,16 @@ function BorrowStatus({ data }: { data: LibBook[] }) {
 	);
 }
 
-function BorrowStatusTable({ data }: { data: LibBookStatus[] }) {
+function BorrowStatusTable({ data: dbData }: { data: LibBookStatus[] }) {
+	const { isbn } = useParams();
+	const urls = dbData.map((d) =>
+		new URL(`scrap/${d.libCode}/${isbn}`, import.meta.env.VITE_BACKEND_API).toString()
+	);
+	const fetcher = (url: string) => fetch(url).then((res) => res.json());
+	const { data, error, isLoading } = useSWR(urls, (urls) =>
+		Promise.allSettled<Promise<LibBookStatus[]>>(urls.map(fetcher))
+	);
+
 	return (
 		<Table.Root size="sm">
 			<Table.Header>
@@ -214,11 +222,40 @@ function BorrowStatusTable({ data }: { data: LibBookStatus[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body fontSize={"xs"}>
-				{data.map((item) => (
+				{dbData.map((item) => (
 					<Table.Row key={item.libName}>
 						<Table.Cell>{item.libName}</Table.Cell>
-						<Table.Cell>{item.classNum + item.bookCode}</Table.Cell>
-						<Table.Cell textAlign="end">{item.bookStatus || "-"}</Table.Cell>
+						{isLoading ? (
+							<Table.Cell p={0}>
+								<SkeletonText noOfLines={1}  />
+							</Table.Cell>
+						) : (
+							<Table.Cell>
+								{error || !data
+									? item.classNum + item.bookCode || "-"
+									: data
+											.filter((v) => v.status === "fulfilled")
+											.flatMap((v) => v.value)
+											.find((v) => item.libName.includes(v.libName))
+											?.bookCode}
+							</Table.Cell>
+						)}
+
+						{isLoading ? (
+							<Table.Cell p={0}>
+								<SkeletonText noOfLines={1} />
+							</Table.Cell>
+						) : (
+							<Table.Cell textAlign="end">
+								{error || data === undefined
+									? item.bookStatus || "-"
+									: data
+											.filter((v) => v.status === "fulfilled")
+											.flatMap((v) => v.value)
+											.find((v) => item.libName.includes(v.libName))
+											?.bookStatus}
+							</Table.Cell>
+						)}
 					</Table.Row>
 				))}
 			</Table.Body>
