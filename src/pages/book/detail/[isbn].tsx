@@ -125,7 +125,6 @@ function NotFoundPage({ isbn }: { isbn?: string }) {
 	);
 }
 
-
 function BookMarkButton({ bookDetail }: { bookDetail: BookInfo }) {
 	const { checkBookMarked, toggleBookMark } = useBookMarkStore();
 	const [srchParams] = useSearchParams();
@@ -301,5 +300,3 @@ function SpecPage({ buttonName, content }: { buttonName: string; content: string
 		</DialogRoot>
 	);
 }
-
-

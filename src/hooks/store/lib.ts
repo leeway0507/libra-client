@@ -15,23 +15,30 @@ export interface LibState {
 	libCodes: {
 		[key: string]: libCodeProps;
 	};
-	defaultLibs: LibProps[];
+	optionLibs: LibProps[];
 	selectedLibs: LibProps[];
 	addLib: (lib: LibProps) => void;
 	changeLibs: (libs: LibProps[]) => void;
 	removeLib: (libCode: string) => void;
 }
 
-const defaultLibs = Object.entries(libCodeAsKey).map(([libCode, value]) => ({
+const optionLibs = Object.entries(libCodeAsKey).map(([libCode, value]) => ({
 	value: libCode,
 	label: value.libName,
 }));
 
+const defaultLibs = [
+	{
+		label: "서울도서관",
+		value: "111314",
+	},
+];
+
 const useLibStore = create<LibState>()(
 	persist(
 		(set) => ({
-			selectedLibs: [],
-			defaultLibs: defaultLibs,
+			selectedLibs: defaultLibs,
+			optionLibs: optionLibs,
 			libCodes: libCodeAsKey,
 			addLib: (lib: LibProps) => {
 				set((state) => ({

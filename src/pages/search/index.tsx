@@ -277,7 +277,7 @@ const showMaxString = (str: string) => {
 };
 
 function OptionBox() {
-	const { defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
+	const { optionLibs: defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
 	return (
 		<Box>
 			<DrawerBottom buttonName="도서관" titleName="필터">
@@ -336,8 +336,14 @@ function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void 
 	);
 }
 
-function ErrorPage(){
-	return <Flex flexGrow={1}>
-		<EmptyState title="에러가 발생했습니다." icon={<BiError/>} description="잠시후 다시 시도해주세요"/>
-	</Flex>
+function ErrorPage() {
+	return (
+		<Flex flexGrow={1}>
+			<EmptyState
+				title="에러가 발생했습니다."
+				icon={<BiError />}
+				description="잠시후 다시 시도해주세요"
+			/>
+		</Flex>
+	);
 }
