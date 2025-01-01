@@ -69,7 +69,7 @@ function MainBox() {
 		changeLibs(selected.map((v) => ({ label: v.libName, value: v.libCode })));
 	}, [selected]);
 
-	const { getLocation, userLocation, error } = useGetGeolocation();
+	const { getLocation, userLocation } = useGetGeolocation();
 
 	const onRemove = (libCode: string) => {
 		removeLib(libCode);

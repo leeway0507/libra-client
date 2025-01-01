@@ -1,4 +1,4 @@
-import { Button, Flex, Box, Icon, Text, Link } from "@chakra-ui/react";
+import { Flex, Box, Icon, Text, Link } from "@chakra-ui/react";
 import { IoMdBookmarks } from "react-icons/io";
 import { RiSearch2Fill } from "react-icons/ri";
 
