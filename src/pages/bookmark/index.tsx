@@ -34,7 +34,7 @@ function BookMarkList() {
 			<EmptyState
 				icon={<IoIosBook />}
 				title="북마크한 도서가 없습니다"
-				description="대여 예정 도서를 저장해 쉽게 관리하세요"
+				description="대여할 도서를 미리 저장해 쉽게 관리하세요"
 			/>
 		</Center>
 	);

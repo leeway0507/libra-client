@@ -60,10 +60,10 @@ function MainBox() {
 	const { changeLibs, selectedLibs, removeLib } = useLibStore();
 	const [libSeoul, setLibSeoul] = useState<LibInfo[]>(libInfoSeoul);
 
-	const c = selectedLibs
+	const selectedLibInfo = selectedLibs
 		.map((v) => libSeoul.find((v2) => v.value === v2.libCode))
 		.filter((v): v is LibInfo => v !== undefined);
-	const [selected, setSelced] = useState<LibInfo[]>(c);
+	const [selected, setSelced] = useState<LibInfo[]>(selectedLibInfo);
 
 	useEffect(() => {
 		changeLibs(selected.map((v) => ({ label: v.libName, value: v.libCode })));
@@ -120,7 +120,7 @@ function MainBox() {
 				</Button>
 			</Flex>
 			<Box my={4}>
-				<Text fontSize={"lg"}>선택 도서관 {selected.length}/5</Text>
+				<Text fontSize={"md"} fontWeight={600}>선택한 도서관 {selected.length}/5</Text>
 				<Box>
 					{selected.length > 1 ? (
 						selected.map((v) => (
@@ -178,9 +178,6 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 
 				<Flex justifyContent={"space-between"} mt={1}>
 					<Flex gapX={2}>
-						{/* <Link href={item.homepage} target="_blank" rel="noopener noreferrer">
-							<Tag startElement={<GoHome />}>홈페이지</Tag>
-						</Link> */}
 						<OperatingTime>
 							<Grid templateColumns="repeat(4, 1fr)" rowGap={8}>
 								<GridItem colSpan={1}>
