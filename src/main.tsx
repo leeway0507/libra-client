@@ -30,7 +30,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 			height="100%"
 			display="flex"
 			justifyContent="center"
-			overflow="scroll"
 			background="gray.200"
 			px={0}
 		>
