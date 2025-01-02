@@ -10,7 +10,7 @@ export default function Page() {
 	return (
 		<>
 			<Text mx={5} mt={5} fontSize={"lg"} fontWeight={600} textAlign={"center"}>
-				북마크한 도서
+				북마크 도서
 			</Text>
 			<BookMarkList />
 			<NavBar />

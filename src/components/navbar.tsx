@@ -8,7 +8,7 @@ import { Link } from "react-router";
 
 export default function NavBar() {
 	return (
-		<Box position="sticky" bottom={0} bgColor={"white"} py={3}>
+		<Box position="sticky" bottom={0} bgColor={"background"} py={3}>
 			<Flex gapX={2}>
 				<Item name="홈" to={"/"} icon={<IoMdHome />} />
 				<Item name="북마크" to={"/bookmark"} icon={<IoMdBookmarks />} />
@@ -34,9 +34,12 @@ function Item({ to, name, icon }: { to: string; name: string; icon: React.ReactN
 			}}
 		>
 			<Link to={to}>
-				<Box
+			<Flex>
+			<Flex flexBasis={0.5}/>
+				<Flex
 					mx={"auto"}
-					width={"50%"}
+					flexBasis={2}
+					justifyContent={"center"}
 					_hover={{ bgColor: "gray.200" }}
 					bgColor={currUrl.pathname === to ? "gray.200" : "transparent"}
 					py={1}
@@ -44,7 +47,9 @@ function Item({ to, name, icon }: { to: string; name: string; icon: React.ReactN
 					rounded={10}
 				>
 					<Icon size={"lg"}>{icon}</Icon>
-				</Box>
+				</Flex>
+				<Flex flexBasis={0.5}/>
+				</Flex>
 				<Text fontSize={"xs"} textTransform={"capitalize"} textAlign={"center"}>
 					{name}
 				</Text>
