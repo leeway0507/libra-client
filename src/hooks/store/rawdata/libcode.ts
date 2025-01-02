@@ -660,7 +660,7 @@ export const libCodeAsKey = {
 		libName: "고맙습니다 하난곡작은도서관",
 	},
 	"111314": {
-		district: "중구",
+		district: "서울시",
 		libName: "서울도서관",
 	},
 	"111331": {

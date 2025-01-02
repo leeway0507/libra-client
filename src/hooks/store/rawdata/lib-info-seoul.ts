@@ -1293,7 +1293,7 @@ export const libInfoSeoul = [
 		homepage: "http://lib.seoul.go.kr/",
 		closed: "매주 월요일 / 공휴일",
 		operatingTime: "화~금 09:00~21:00 / 토,일 09:00~18:00",
-		district: "중구",
+		district: "서울시",
 		distance: 0,
 	},
 	{
