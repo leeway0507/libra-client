@@ -149,12 +149,12 @@ function convertMetersToKilometers(from: Location, to: Location): number {
 
 function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 	return (
-		<Flex borderBottomWidth={1} py={4}>
-			<Flex basis={"1/3"}>
+		<Flex borderBottomWidth={1} py={4} gapX={1}>
+			<Flex basis={"1/4"}>
 				<Image
 					rounded="md"
 					mx={"auto"}
-					w="80%"
+					w="90%"
 					fit="contain"
 					src={`/lib-logo/district/${district[item.district as keyof typeof district]}.png`}
 					// onError={({ currentTarget }) => {
@@ -164,9 +164,8 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 				/>
 			</Flex>
 			<Flex
-				basis={"2/3"}
+				basis={"3/4"}
 				direction={"column"}
-				fontSize={"md"}
 				color={"GrayText"}
 				justifyContent={"center"}
 			>
