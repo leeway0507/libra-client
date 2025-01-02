@@ -38,9 +38,9 @@ function Layout({ children }: { children: React.ReactNode }) {
 					<Flex
 						maxW={"md"}
 						position={"relative"}
-						minHeight={"100vh"}
+						minHeight={"100dvh"}
 						direction={"column"}
-						bgColor={"white"}
+						bgColor={"background"}
 					>
 						{children}
 					</Flex>
