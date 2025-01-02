@@ -3,10 +3,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, useRoutes, RouteObject } from "react-router";
 import routes from "~react-pages";
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { ChakraProvider, defaultSystem, Flex } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "./pages/404";
+import {motion} from "framer-motion"
 
 function GlobalStyles() {
 	return (
@@ -23,6 +24,17 @@ function GlobalStyles() {
 	);
 }
 
+const PageTransition = ({ children }:{children:React.ReactNode}) => (
+	<motion.div
+	  initial={{ opacity: 0 }}
+	  animate={{ opacity: 1 }}
+	  exit={{ opacity: 0 }}
+	  transition={{ duration: 0.3 }}
+	>
+	  {children}
+	</motion.div>
+  );
+
 function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<Container
@@ -31,12 +43,16 @@ function Layout({ children }: { children: React.ReactNode }) {
 			display="flex"
 			justifyContent="center"
 			overflow="scroll"
-			background="gray.400"
+			background="gray.200"
 			px={0}
 		>
-			<Container maxW="md" background="white" flexGrow={1} p={0}>
-				{children}
-			</Container>
+				<Container maxW="md" p={0}>
+			<PageTransition>
+				<Flex maxW={"md"} position={"relative"} minHeight={"100vh"} direction={"column"} bgColor={"white"}>
+					{children}
+					</Flex>
+			</PageTransition>
+				</Container>
 			<Toaster />
 		</Container>
 	);

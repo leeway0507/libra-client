@@ -49,10 +49,10 @@ export interface SelectFilterProps {
 
 export default function Page() {
 	return (
-		<Flex direction="column" height="100%" paddingTop={0}>
+		<>
 			<MainBox />
 			<NavBar />
-		</Flex>
+		</>
 	);
 }
 
@@ -304,6 +304,7 @@ const district: District = {
 	중구: 24,
 	중랑구: 25,
 	교육청: 26,
+	서울시: 27,
 };
 
 type Location = { latitude: number; longitude: number };

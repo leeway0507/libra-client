@@ -43,20 +43,14 @@ type SearchResult = {
 
 export default function Page() {
 	return (
-		<Flex
-			direction="column"
-			position={"relative"}
-			minHeight={"100vh"}
-			bgColor={"white"}
-			spaceY={4}
-		>
+		<>
 			<Box position={"sticky"} top={0} bgColor={"Background"} zIndex={5}>
 				<SearchBar />
 			</Box>
 			<OptionBox />
 			<MainBox />
 			<NavBar />
-		</Flex>
+		</>
 	);
 }
 

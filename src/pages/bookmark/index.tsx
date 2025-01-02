@@ -1,7 +1,6 @@
 import { Center, Flex, Image, Text } from "@chakra-ui/react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IoIosBook } from "react-icons/io";
-import SearchBarMock from "@/components/search-bar-mock";
 import NavBar from "@/components/navbar";
 import useBookMarkStore, { BookInfo } from "@/hooks/store/bookmark";
 import { Link } from "react-router";
@@ -9,11 +8,11 @@ import ImageCover from "@/components/image-cover";
 
 export default function Page() {
 	return (
-		<Flex position={"relative"} minHeight={"100vh"} direction={"column"}>
-			<SearchBarMock />
+		<>
+						<Text  mx={5} mt={5} fontSize={"lg"} fontWeight={600} textAlign={"center"}>북마크한 도서</Text>
 			<BookMarkList />
 			<NavBar />
-		</Flex>
+		</>
 	);
 }
 
@@ -24,6 +23,7 @@ function BookMarkList() {
 		<BookMarkCard key={book.isbn} bookInfo={book} />
 	));
 	return bookMarkList.length !== 0 ? (
+
 		<Flex flexGrow={1} mx={5} my={5}>
 			<Flex gapY={3} flexDirection={"column"}>
 				{BookMarkArrComponent}
@@ -34,7 +34,7 @@ function BookMarkList() {
 			<EmptyState
 				icon={<IoIosBook />}
 				title="북마크한 도서가 없습니다"
-				description="대여할 도서를 미리 저장해 쉽게 관리하세요"
+				description="대여할 도서를 쉽게 관리하세요"
 			/>
 		</Center>
 	);
