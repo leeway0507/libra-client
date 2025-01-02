@@ -16,7 +16,6 @@ import {
 	DialogContent,
 	DialogHeader,
 	DialogRoot,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
@@ -91,16 +90,16 @@ export default function Page() {
 	}
 
 	return data === undefined ? null : (
-		<Box my={1} bgColor="white">
+		<>
 			<SearchBarMock bookDetail={data} />
 			<Box mx={4}>
 				<BookCard bookInfo={data} />
-				<Flex direction="column" mx={2} my={3} gapY={3}>
+				<Flex direction="column" mx={2} flexGrow={1}>
 					{data.toc && <Toc text={data.toc} />}
 					<BorrowStatus data={data.libBooks} />
 				</Flex>
 			</Box>
-		</Box>
+		</>
 	);
 }
 function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
@@ -276,15 +275,25 @@ function BorrowStatusTable({ data: dbData }: { data: LibBookStatus[] }) {
 }
 
 function SpecPage({ buttonName, content }: { buttonName: string; content: string }) {
+	const [searchParams,setSearchParams] = useSearchParams()
+	const isOpen = searchParams.get("tocOpen")
+
+    const handleChange = () => {
+        setSearchParams((prev) => {
+            const newParams = new URLSearchParams(prev);
+			isOpen ? newParams.delete("tocOpen") : 
+            newParams.set("tocOpen","true");
+            return newParams;
+        });
+    };
+	const navigation = useNavigate()
 	return (
-		<DialogRoot scrollBehavior="inside" size="sm">
-			<DialogTrigger asChild>
-				<Button variant="plain" ms={"auto"} px={0} display={"block"}>
+		<DialogRoot scrollBehavior={"inside"} lazyMount open={Boolean(isOpen)} onOpenChange={()=>navigation(-1)}>
+				<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
 					{buttonName}
 				</Button>
-			</DialogTrigger>
-			<DialogContent my={0} maxHeight={"100vh"}>
-				<DialogHeader px={2}>
+			<DialogContent my={0} maxHeight={"100dvh"}>
+				<DialogHeader px={2} py={1}>
 					<DialogCloseBaseTrigger>
 						<Button variant={"plain"} px={0}>
 							<Icon size="lg" aria-label="back">
@@ -294,7 +303,6 @@ function SpecPage({ buttonName, content }: { buttonName: string; content: string
 						</Button>
 					</DialogCloseBaseTrigger>
 				</DialogHeader>
-
 				<DialogBody whiteSpace={"pre-wrap"}>{content}</DialogBody>
 			</DialogContent>
 		</DialogRoot>
