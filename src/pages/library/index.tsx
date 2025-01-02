@@ -231,7 +231,7 @@ export function SelectSearch({
 			onChange={(valArr) => setSelectedOptions(valArr.map((v) => v))}
 			options={availableOptions}
 			getOptionValue={(option) => option.libCode}
-			getOptionLabel={(option) => option.libName}
+			getOptionLabel={(option) => `${option.district} ${option.libName}`}
 			isMulti
 			isClearable={false}
 			backspaceRemovesValue={false}
