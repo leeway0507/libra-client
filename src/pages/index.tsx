@@ -14,11 +14,10 @@ export default function Page() {
 
 function MainBox() {
 	return (
-		<Box backgroundColor={"blue.50"} flexGrow={1} width={"100%"} >
-						<Flex gapX={1}>
-						<Flex flexGrow={1}>
-							/</Flex>
-							/</Flex>
+		<Box backgroundColor={"blue.50"} flexGrow={1} width={"100%"}>
+			<Flex gapX={1}>
+				<Flex flexGrow={1}>/</Flex>/
+			</Flex>
 		</Box>
 	);
 }

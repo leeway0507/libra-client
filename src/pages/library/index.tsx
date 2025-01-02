@@ -120,7 +120,9 @@ function MainBox() {
 				</Button>
 			</Flex>
 			<Box my={4}>
-				<Text fontSize={"md"} fontWeight={600}>선택한 도서관 {selected.length}/5</Text>
+				<Text fontSize={"md"} fontWeight={600}>
+					선택한 도서관 {selected.length}/5
+				</Text>
 				<Box>
 					{selected.length > 1 ? (
 						selected.map((v) => (

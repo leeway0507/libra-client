@@ -9,7 +9,9 @@ import ImageCover from "@/components/image-cover";
 export default function Page() {
 	return (
 		<>
-						<Text  mx={5} mt={5} fontSize={"lg"} fontWeight={600} textAlign={"center"}>북마크한 도서</Text>
+			<Text mx={5} mt={5} fontSize={"lg"} fontWeight={600} textAlign={"center"}>
+				북마크한 도서
+			</Text>
 			<BookMarkList />
 			<NavBar />
 		</>
@@ -23,7 +25,6 @@ function BookMarkList() {
 		<BookMarkCard key={book.isbn} bookInfo={book} />
 	));
 	return bookMarkList.length !== 0 ? (
-
 		<Flex flexGrow={1} mx={5} my={5}>
 			<Flex gapY={3} flexDirection={"column"}>
 				{BookMarkArrComponent}
