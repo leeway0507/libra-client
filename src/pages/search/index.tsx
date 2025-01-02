@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { DrawerBottom } from "@/components/drawer-bottom";
+import { BookSelectDrawer } from "@/components/drawer-bottom";
 import SelectSearch from "@/components/select-search";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
@@ -30,6 +30,11 @@ import { BiError } from "react-icons/bi";
 import ImageCover from "@/components/image-cover";
 import useSWR from "swr";
 import { EmptyState } from "@/components/ui/empty-state";
+import { IoFilter } from "react-icons/io5";
+
+
+
+
 
 type SearchResult = {
 	isbn: string;
@@ -47,7 +52,7 @@ export default function Page() {
 			<Box position={"sticky"} top={0} bgColor={"Background"} zIndex={5}>
 				<SearchBar />
 			</Box>
-			<OptionBox />
+			<FilterBox />
 			<MainBox />
 			<NavBar />
 		</>
@@ -84,7 +89,7 @@ function SearchBar() {
 	const placeholder = keyword ? `${showMaxString(keyword)}에 대한 검색 결과` : "검색하기";
 
 	return (
-		<Container position={"relative"} px={0} my={1}>
+		<Container position={"relative"} px={0} my={0.5}>
 			<Button
 				position={"absolute"}
 				zIndex={1}
@@ -270,11 +275,14 @@ const showMaxString = (str: string) => {
 	return str.length > 10 ? str.slice(0, 10) + "..." : str;
 };
 
-function OptionBox() {
+function FilterBox() {
 	const { optionLibs: defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
 	return (
-		<Box>
-			<DrawerBottom buttonName="도서관" titleName="필터">
+		<Flex gapX={2} alignItems={"center"} py={2} px={3} mb={2}> 
+			<Icon size={"sm"}>
+				<IoFilter />
+			</Icon>
+			<BookSelectDrawer buttonName="도서관" titleName="필터">
 				<Box height={"96"}>
 					{/* {JSON.stringify(libs)} */}
 					{selectedLibs !== undefined && (
@@ -310,8 +318,8 @@ function OptionBox() {
 						)}
 					</Box>
 				</Box>
-			</DrawerBottom>
-		</Box>
+			</BookSelectDrawer>
+		</Flex>
 	);
 }
 

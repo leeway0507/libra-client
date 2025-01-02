@@ -9,7 +9,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const DrawerBottom = ({
+export const BookSelectDrawer = ({
 	children,
 	buttonName,
 	titleName,
@@ -21,7 +21,7 @@ export const DrawerBottom = ({
 	return (
 		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"sm"}>
 			<DialogTrigger asChild>
-				<Button variant="outline" size={"sm"}>
+				<Button variant="subtle" size={"xs"} px={3} >
 					{buttonName}
 				</Button>
 			</DialogTrigger>
