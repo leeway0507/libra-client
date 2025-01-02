@@ -27,7 +27,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<Container
 			width="100%"
-			height="100%"
+			minHeight="100%"
 			display="flex"
 			justifyContent="center"
 			background="gray.200"
@@ -42,6 +42,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 						bgColor={"background"}
 					>
 						{children}
+						<Flex height="50px"/>
 					</Flex>
 			</Container>
 			<Toaster />

@@ -8,7 +8,7 @@ import { Link } from "react-router";
 
 export default function NavBar() {
 	return (
-		<Box position="fixed" bottom={0} bgColor={"background"} py={3} w={"100%"}>
+		<Box position="fixed" bottom={0} bgColor={"background"} py={3} w={"100%"} maxW={"md"}>
 			<Flex gapX={2}>
 				<Item name="홈" to={"/"} icon={<IoMdHome />} />
 				<Item name="북마크" to={"/bookmark"} icon={<IoMdBookmarks />} />
