@@ -254,7 +254,8 @@ export function SelectSearch({
 				}),
 				menu: (base) => ({
 					...base,
-					width: "calc(var(--chakra-sizes-md) - 8px)",
+					width: "calc(100vw - 8px)",
+					maxWidth: "calc(var(--chakra-sizes-md) - 8px)",
 				}),
 				menuList: (base) => ({
 					...base,
