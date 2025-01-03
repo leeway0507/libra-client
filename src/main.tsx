@@ -34,16 +34,16 @@ function Layout({ children }: { children: React.ReactNode }) {
 			px={0}
 		>
 			<Container maxW="md" p={0}>
-					<Flex
-						maxW={"md"}
-						position={"relative"}
-						minHeight={"100dvh"}
-						direction={"column"}
-						bgColor={"background"}
-					>
-						{children}
-						<Flex height="50px"/>
-					</Flex>
+				<Flex
+					maxW={"md"}
+					position={"relative"}
+					minHeight={"100dvh"}
+					direction={"column"}
+					bgColor={"background"}
+				>
+					{children}
+					<Flex height="50px" />
+				</Flex>
 			</Container>
 			<Toaster />
 		</Container>

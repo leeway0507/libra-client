@@ -7,7 +7,6 @@ import {
 	Icon,
 	Grid,
 	GridItem,
-	Image,
 	Button,
 	Spinner,
 	VStack,
@@ -18,7 +17,7 @@ import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { BookSelectDrawer } from "@/components/drawer-bottom";
+import { BookSelectDrawer } from "@/components/book-select-drawer";
 import SelectSearch from "@/components/select-search";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
@@ -27,14 +26,10 @@ import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
 import { BiError } from "react-icons/bi";
 
-import ImageCover from "@/components/image-cover";
 import useSWR from "swr";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IoFilter } from "react-icons/io5";
-
-
-
-
+import BookImage from "@/components/book-image";
 
 type SearchResult = {
 	isbn: string;
@@ -149,7 +144,7 @@ const fetcher = async (url: string) => {
 };
 
 function MainBox() {
-	const [schParams, _] = useSearchParams(new URLSearchParams(window.location.search));
+	const [schParams] = useSearchParams(new URLSearchParams(window.location.search));
 	const keyword = schParams.get("q");
 	const libCode = schParams.get("libCode");
 
@@ -186,20 +181,7 @@ function BookCard({ result }: { result: SearchResult }) {
 	return (
 		<GridItem>
 			<Link to={`/book/detail/${result.isbn}`}>
-				<ImageCover>
-					<Image
-						rounded="md"
-						aspectRatio={"2/3"}
-						w="100%"
-						fit="fit"
-						src={`/book-img/${result.isbn}.jpg`}
-						onError={({ currentTarget }) => {
-							currentTarget.onerror = null; // prevents looping
-							currentTarget.src = "/book-img/1.jpg";
-						}}
-						bgColor={"gray.50"}
-					/>
-				</ImageCover>
+				<BookImage src={`/book-img/${result.isbn}.jpg`} />
 				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
 					<Text
 						fontSize={"sm"}
@@ -278,7 +260,7 @@ const showMaxString = (str: string) => {
 function FilterBox() {
 	const { optionLibs: defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
 	return (
-		<Flex gapX={2} alignItems={"center"} py={2} px={3} mb={2}> 
+		<Flex gapX={2} alignItems={"center"} py={2} px={3} mb={2}>
 			<Icon size={"sm"}>
 				<IoFilter />
 			</Icon>

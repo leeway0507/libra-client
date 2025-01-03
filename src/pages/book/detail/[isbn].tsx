@@ -1,12 +1,11 @@
-import { Box, Text, Icon, Flex, Image, Button, Table, Center } from "@chakra-ui/react";
+import { Box, Text, Icon, Flex, Button, Table, Center } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaBookmark } from "react-icons/fa6";
 import { toaster } from "@/components/ui/toaster";
 import useBookMarkStore, { BookInfo, LibBook } from "@/hooks/store/bookmark";
-import { format } from "date-fns";
-import ImageCover from "@/components/image-cover";
+import BookImage from "@/components/book-image";
 import { SubTitle } from "@/components/text";
 import useLibStore from "@/hooks/store/lib";
 import useSWR from "swr";
@@ -157,18 +156,7 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Flex spaceX={4}>
 			<Flex basis={"1/4"}>
-				<ImageCover>
-					<Image
-						rounded="md"
-						w="100%"
-						fit="contain"
-						src={`/book-img/${3}.jpg`}
-						onError={({ currentTarget }) => {
-							currentTarget.onerror = null; // prevents looping
-							currentTarget.src = "/book-img/1.jpg";
-						}}
-					/>
-				</ImageCover>
+				<BookImage src={`/book-img/${3}.jpg`} />
 			</Flex>
 			<Flex basis={"3/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
 				<Text color={"HighlightText"} fontWeight={600} fontSize={"md"}>
@@ -184,7 +172,7 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 
 function Toc({ text }: { text: string }) {
 	return (
-		<Box spaceY={2}>
+		<Box spaceY={2} mt={3}>
 			<SubTitle>목차</SubTitle>
 			<Text lineClamp={text.length < 10 ? 0 : 10} whiteSpace={"pre-wrap"} fontSize={"sm"}>
 				{text}
@@ -198,31 +186,18 @@ function BorrowStatus({ data }: { data: LibBook[] }) {
 	const { libCodes } = useLibStore();
 	const LibBookStatus = data.map((b) => ({ ...b, libName: libCodes[b.libCode]?.libName }));
 
-	const readableDate = format(Date.now(), "yy/MM/dd HH:mm:ss");
-
 	return (
 		<Box spaceY={2}>
 			<Flex justifyContent={"space-between"} alignItems={"center"}>
 				<SubTitle>대여정보</SubTitle>
-				<Text fontSize={"xs"} color={"GrayText"}>
-					업데이트 : {readableDate}
-				</Text>
 			</Flex>
-			<BorrowStatusTable data={LibBookStatus} />
+			<BorrowStatusTable libBooks={LibBookStatus} />
 		</Box>
 	);
 }
 
-function BorrowStatusTable({ data: dbData }: { data: LibBookStatus[] }) {
+function BorrowStatusTable({ libBooks }: { libBooks: LibBookStatus[] }) {
 	const { isbn } = useParams();
-	const urls = dbData.map((d) =>
-		new URL(`scrap/${d.libCode}/${isbn}`, import.meta.env.VITE_BACKEND_API).toString()
-	);
-	const fetcher = (url: string) => fetch(url).then((res) => res.json());
-	const { data, error, isLoading } = useSWR(urls, (urls) =>
-		Promise.allSettled<Promise<LibBookStatus[]>>(urls.map(fetcher))
-	);
-
 	return (
 		<Table.Root size="sm">
 			<Table.Header>
@@ -233,65 +208,60 @@ function BorrowStatusTable({ data: dbData }: { data: LibBookStatus[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body fontSize={"xs"}>
-				{dbData.map((item) => (
-					<Table.Row key={item.libName}>
-						<Table.Cell>{item.libName}</Table.Cell>
-						{isLoading ? (
-							<Table.Cell p={0}>
-								<SkeletonText noOfLines={1} />
-							</Table.Cell>
-						) : (
-							<Table.Cell>
-								{error || !data
-									? item.classNum + item.bookCode || "-"
-									: data
-											.filter((v) => v.status === "fulfilled")
-											.flatMap((v) => v.value)
-											.find((v) => item.libName.includes(v.libName))
-											?.bookCode}
-							</Table.Cell>
-						)}
-
-						{isLoading ? (
-							<Table.Cell p={0}>
-								<SkeletonText noOfLines={1} />
-							</Table.Cell>
-						) : (
-							<Table.Cell textAlign="end">
-								{error || data === undefined
-									? item.bookStatus || "-"
-									: data
-											.filter((v) => v.status === "fulfilled")
-											.flatMap((v) => v.value)
-											.find((v) => item.libName.includes(v.libName))
-											?.bookStatus}
-							</Table.Cell>
-						)}
-					</Table.Row>
+				{libBooks.map((item) => (
+					<Row isbn={isbn!} req={item} key={item.libCode} />
 				))}
 			</Table.Body>
 		</Table.Root>
 	);
 }
 
-function SpecPage({ buttonName, content }: { buttonName: string; content: string }) {
-	const [searchParams,setSearchParams] = useSearchParams()
-	const isOpen = searchParams.get("tocOpen")
+function Row({ isbn, req }: { isbn: string; req: LibBookStatus }) {
+	const fetcher = (url: string) => fetch(url).then((res) => res.json());
+	const { data, error, isLoading } = useSWR<LibBookStatus[]>(
+		new URL(`scrap/${req.libCode}/${isbn}`, import.meta.env.VITE_BACKEND_API).toString(),
+		fetcher
+	);
 
-    const handleChange = () => {
-        setSearchParams((prev) => {
-            const newParams = new URLSearchParams(prev);
-			isOpen ? newParams.delete("tocOpen") : 
-            newParams.set("tocOpen","true");
-            return newParams;
-        });
-    };
-	const navigation = useNavigate()
+	const getCellValue = (key: "bookCode" | "bookStatus", fallbackValue: string | undefined) => {
+		if (isLoading) return <SkeletonText noOfLines={1} />;
+		if (error || !data) return fallbackValue || "-";
+
+		const matchedData = data.find((v) => req.libName.includes(v.libName));
+		return matchedData?.[key] || fallbackValue || "-";
+	};
+
 	return (
-		<DialogRoot scrollBehavior={"inside"} lazyMount open={Boolean(isOpen)} onOpenChange={()=>navigation(-1)}>
-				<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
-					{buttonName}
-				</Button>
+		<Table.Row key={req.libName}>
+			<Table.Cell>{req.libName}</Table.Cell>
+			<Table.Cell>{getCellValue("bookCode", req.classNum + req.bookCode)}</Table.Cell>
+			<Table.Cell textAlign="end">{getCellValue("bookStatus", req.bookStatus)}</Table.Cell>
+		</Table.Row>
+	);
+}
+
+function SpecPage({ buttonName, content }: { buttonName: string; content: string }) {
+	const [searchParams, setSearchParams] = useSearchParams();
+	const isOpen = searchParams.get("tocOpen");
+
+	const handleChange = () => {
+		setSearchParams((prev) => {
+			const newParams = new URLSearchParams(prev);
+			isOpen ? newParams.delete("tocOpen") : newParams.set("tocOpen", "true");
+			return newParams;
+		});
+	};
+	const navigation = useNavigate();
+	return (
+		<DialogRoot
+			scrollBehavior={"inside"}
+			lazyMount
+			open={Boolean(isOpen)}
+			onOpenChange={() => navigation(-1)}
+		>
+			<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
+				{buttonName}
+			</Button>
 			<DialogContent my={0} maxHeight={"100dvh"}>
 				<DialogHeader px={2} py={1}>
 					<DialogCloseBaseTrigger>

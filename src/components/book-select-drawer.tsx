@@ -21,7 +21,7 @@ export const BookSelectDrawer = ({
 	return (
 		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"sm"}>
 			<DialogTrigger asChild>
-				<Button variant="subtle" size={"xs"} px={3} >
+				<Button variant="subtle" size={"xs"} px={3}>
 					{buttonName}
 				</Button>
 			</DialogTrigger>

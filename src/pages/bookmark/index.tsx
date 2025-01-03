@@ -1,10 +1,10 @@
-import { Center, Flex, Image, Text } from "@chakra-ui/react";
+import { Center, Flex, Text } from "@chakra-ui/react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IoIosBook } from "react-icons/io";
 import NavBar from "@/components/navbar";
 import useBookMarkStore, { BookInfo } from "@/hooks/store/bookmark";
 import { Link } from "react-router";
-import ImageCover from "@/components/image-cover";
+import BookImage from "@/components/book-image";
 
 export default function Page() {
 	return (
@@ -26,7 +26,7 @@ function BookMarkList() {
 	));
 	return bookMarkList.length !== 0 ? (
 		<Flex flexGrow={1} mx={5} my={5}>
-			<Flex gapY={3} flexDirection={"column"}>
+			<Flex gapY={5} flexDirection={"column"}>
 				{BookMarkArrComponent}
 			</Flex>
 		</Flex>
@@ -44,23 +44,11 @@ function BookMarkList() {
 function BookMarkCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Link to={`/book/detail/${bookInfo.isbn}?type=bookmark`}>
-			<Flex spaceX={4}>
+			<Flex spaceX={5}>
 				<Flex basis={"1/5"}>
-					<ImageCover>
-						<Image
-							rounded="md"
-							aspectRatio={"3/4"}
-							w="100%"
-							fit="contain"
-							src={`/book-img/${3}.jpg`}
-							onError={({ currentTarget }) => {
-								currentTarget.onerror = null; // prevents looping
-								currentTarget.src = "/book-img/1.jpg";
-							}}
-						/>
-					</ImageCover>
+					<BookImage src={`/book-img/${3}.jpg`} />
 				</Flex>
-				<Flex basis={"3/5"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
+				<Flex basis={"4/5"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
 					<Text
 						fontSize={"md"}
 						fontWeight={600}

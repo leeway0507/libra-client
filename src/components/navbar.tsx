@@ -34,21 +34,21 @@ function Item({ to, name, icon }: { to: string; name: string; icon: React.ReactN
 			}}
 		>
 			<Link to={to}>
-			<Flex>
-			<Flex flexBasis={0.5}/>
-				<Flex
-					mx={"auto"}
-					flexBasis={2}
-					justifyContent={"center"}
-					_hover={{ bgColor: "gray.200" }}
-					bgColor={currUrl.pathname === to ? "gray.200" : "transparent"}
-					py={1}
-					px={3.5}
-					rounded={10}
-				>
-					<Icon size={"lg"}>{icon}</Icon>
-				</Flex>
-				<Flex flexBasis={0.5}/>
+				<Flex>
+					<Flex flexBasis={0.5} />
+					<Flex
+						mx={"auto"}
+						flexBasis={2}
+						justifyContent={"center"}
+						_hover={{ bgColor: "gray.200" }}
+						bgColor={currUrl.pathname === to ? "gray.200" : "transparent"}
+						py={1}
+						px={3.5}
+						rounded={10}
+					>
+						<Icon size={"lg"}>{icon}</Icon>
+					</Flex>
+					<Flex flexBasis={0.5} />
 				</Flex>
 				<Text fontSize={"xs"} textTransform={"capitalize"} textAlign={"center"}>
 					{name}

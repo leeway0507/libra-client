@@ -163,12 +163,7 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 					alt={item.libName}
 				/>
 			</Flex>
-			<Flex
-				basis={"3/4"}
-				direction={"column"}
-				color={"GrayText"}
-				justifyContent={"center"}
-			>
+			<Flex basis={"3/4"} direction={"column"} color={"GrayText"} justifyContent={"center"}>
 				<Flex alignItems={"center"} justifyContent={"space-between"}>
 					<Text color={"HighlightText"} fontWeight={500}>
 						[{item.district}] {item.libName}
