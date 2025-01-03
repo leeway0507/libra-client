@@ -1,4 +1,4 @@
-import { Box, Text, Icon, Flex, Button, Table, Center } from "@chakra-ui/react";
+import { Box, Text, Icon, Flex, Button, Table, Center, Stack } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaRegBookmark } from "react-icons/fa6";
@@ -19,7 +19,7 @@ import {
 import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
 import { useSearchParams } from "react-router";
-import { SkeletonText } from "@/components/ui/skeleton";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 
 type BookDetailReq = {
 	isbn: string;
@@ -76,13 +76,18 @@ export default function Page() {
 				: selectedLibs.map((v) => v.value),
 	};
 
+	const cacheKey = JSON.stringify({ path: "/book/detail", body: reqBody });
+
 	const { data, error, isLoading } = useSWR<BookInfo>(
-		reqBody.isbn === undefined || reqBody.libCodes.length === 0 ? null : "/book/detail",
-		(url: string) => fetcher(url, reqBody)
+		cacheKey,
+		() => fetcher("/book/detail", reqBody),
+		{
+			keepPreviousData: true,
+		}
 	);
 
 	if (isLoading) {
-		return null;
+		return <Loading/>;
 	}
 	if (error?.status === 404) {
 		return <NotFoundPage isbn={isbn} />;
@@ -276,5 +281,26 @@ function SpecPage({ buttonName, content }: { buttonName: string; content: string
 				<DialogBody whiteSpace={"pre-wrap"}>{content}</DialogBody>
 			</DialogContent>
 		</DialogRoot>
+	);
+}
+
+function Loading() {
+	return (
+		<Box mx={4} my={8} spaceY={10}>
+			<Flex spaceX={4}>
+				<Flex basis={"1/4"}>
+					<Skeleton aspectRatio={"1/1.414"} w={"full"} h={"full"} />
+				</Flex>
+				<Flex basis={"3/4"} direction={"column"} spaceY={4} my={1}>
+					<SkeletonText noOfLines={4} gap={4} />
+				</Flex>
+			</Flex>
+			<Skeleton aspectRatio={"1/0.6"} w={"full"} />
+			<SkeletonText noOfLines={1} h={"25px"} w={"25%"} />
+			<Stack>
+				<SkeletonText noOfLines={1} />
+				<SkeletonText noOfLines={1} />
+			</Stack>
+		</Box>
 	);
 }

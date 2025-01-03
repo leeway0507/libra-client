@@ -158,21 +158,24 @@ function MainBox() {
 	);
 
 	return (
-		<Flex flexGrow={1} direction={"column"} mx={5} pb={5}>
+		<Flex flexGrow={1} direction={"column"} mx={3} pb={5}>
 			{!keyword || !libCode ? (
 				<RecentKeyword />
 			) : isLoading ? (
 				<Loading />
-			) : error || !data ? (
-				<ErrorPage />
+			) : !error && data ? (
+				<>
+					{isLoading && <Loading />}
+					<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
+						{data
+							.toSorted((a, b) => b.score - a.score)
+							.map((result) => (
+								<BookCard key={result.isbn} result={result} />
+							))}
+					</Grid>
+				</>
 			) : (
-				<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
-					{data
-						.toSorted((a, b) => b.score - a.score)
-						.map((result) => (
-							<BookCard key={result.isbn} result={result} />
-						))}
-				</Grid>
+				<ErrorPage />
 			)}
 		</Flex>
 	);
@@ -201,7 +204,7 @@ function BookCard({ result }: { result: SearchResult }) {
 
 const Loading = () => {
 	return (
-		<Center flexGrow={1}>
+		<Center flexGrow={1} opacity={0.5}>
 			<VStack>
 				<Spinner />
 				<Text>검색중...</Text>
