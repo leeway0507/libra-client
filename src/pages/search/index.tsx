@@ -168,7 +168,6 @@ function MainBox() {
 					{isLoading && <Loading />}
 					<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
 						{data
-							.toSorted((a, b) => b.score - a.score)
 							.map((result) => (
 								<BookCard key={result.isbn} result={result} />
 							))}
