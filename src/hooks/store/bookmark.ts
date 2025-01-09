@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 
 export type LibBook = {
 	libCode: number;
-	classNum: string;
 	bookCode: string;
 };
 

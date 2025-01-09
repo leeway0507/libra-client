@@ -7,20 +7,19 @@ import { ChakraProvider, Flex } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "./pages/404";
-import { createSystem,defaultConfig } from "@chakra-ui/react";
-import "@fontsource/noto-sans/index.css"
+import { createSystem, defaultConfig } from "@chakra-ui/react";
+import "@fontsource/noto-sans/index.css";
 
 const system = createSystem(defaultConfig, {
-  theme: {
-    tokens: {
-      fonts: {
-        heading: { value: `'Roboto', sans-serif` },
-        body: { value: `'Roboto', sans-serif` },
-      },
-    },
-  },
-})
-
+	theme: {
+		tokens: {
+			fonts: {
+				heading: { value: `'Roboto', sans-serif` },
+				body: { value: `'Roboto', sans-serif` },
+			},
+		},
+	},
+});
 
 function GlobalStyles() {
 	return (

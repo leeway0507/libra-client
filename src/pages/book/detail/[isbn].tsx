@@ -87,7 +87,7 @@ export default function Page() {
 	);
 
 	if (isLoading) {
-		return <Loading/>;
+		return <Loading />;
 	}
 	if (error?.status === 404) {
 		return <NotFoundPage isbn={isbn} />;
@@ -223,23 +223,27 @@ function BorrowStatusTable({ libBooks }: { libBooks: LibBookStatus[] }) {
 
 function Row({ isbn, req }: { isbn: string; req: LibBookStatus }) {
 	const fetcher = (url: string) => fetch(url).then((res) => res.json());
-	const { data, error, isLoading } = useSWR<LibBookStatus[]>(
+	const {
+		data: bookStatus,
+		error,
+		isLoading,
+	} = useSWR<LibBookStatus[]>(
 		new URL(`scrap/${req.libCode}/${isbn}`, import.meta.env.VITE_BACKEND_API).toString(),
 		fetcher
 	);
 
 	const getCellValue = (key: "bookCode" | "bookStatus", fallbackValue: string | undefined) => {
 		if (isLoading) return <SkeletonText noOfLines={1} />;
-		if (error || !data) return fallbackValue || "-";
+		if (error || !bookStatus) return fallbackValue || "-";
 
-		const matchedData = data.find((v) => req.libName.includes(v.libName));
+		const matchedData = bookStatus.find((v) => req.libName.includes(v.libName));
 		return matchedData?.[key] || fallbackValue || "-";
 	};
 
 	return (
 		<Table.Row key={req.libName}>
 			<Table.Cell>{req.libName}</Table.Cell>
-			<Table.Cell>{getCellValue("bookCode", req.classNum + req.bookCode)}</Table.Cell>
+			<Table.Cell>{getCellValue("bookCode", req.bookCode)}</Table.Cell>
 			<Table.Cell textAlign="end">{getCellValue("bookStatus", req.bookStatus)}</Table.Cell>
 		</Table.Row>
 	);
