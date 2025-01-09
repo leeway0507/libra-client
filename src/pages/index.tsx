@@ -1,5 +1,4 @@
 import { Box, Flex, Span, Tabs, Text } from "@chakra-ui/react";
-import SearchBarMock from "@/components/search-bar-mock";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
@@ -98,7 +97,7 @@ function TabArr() {
 function BestSeller({ category }: { category: string }) {
 	const { selectedLibs } = useLibStore();
 	const libCodes = selectedLibs.map((v) => v.value).join(",");
-	const { data, error, isLoading } = useSWR<BestSellers>(
+	const { data } = useSWR<BestSellers>(
 		`/book/bestseller/${category}?libCode=${libCodes}`,
 		fetcher
 	);
