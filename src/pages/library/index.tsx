@@ -94,7 +94,13 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 					alt={item.libName}
 				/>
 			</Flex>
-			<Flex basis={"3/4"} direction={"column"} color={"GrayText"} justifyContent={"center"}>
+			<Flex
+				basis={"3/4"}
+				direction={"column"}
+				color={"GrayText"}
+				justifyContent={"center"}
+				px={2}
+			>
 				<Flex alignItems={"center"} justifyContent={"space-between"}>
 					<Text color={"HighlightText"} fontWeight={500}>
 						[{item.district}] {item.libName}
@@ -122,7 +128,11 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 							</Grid>
 						</OperatingTime>
 					</Flex>
-					{item.distance !== 0 && <Text>{item.distance}km</Text>}
+					{item.distance !== 0 && (
+						<Text fontSize={"sm"} me={2}>
+							{item.distance}km
+						</Text>
+					)}
 				</Flex>
 			</Flex>
 		</Flex>
