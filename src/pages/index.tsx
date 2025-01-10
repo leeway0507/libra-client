@@ -1,4 +1,4 @@
-import { Box, Flex, Span, Tabs, Text, Icon } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon, Skeleton } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
@@ -7,6 +7,7 @@ import useLibStore from "@/hooks/store/lib";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { BookSelectDrawer } from "@/components/book-select-drawer";
 import { LibInfo } from "./library";
+import { SkeletonText } from "@/components/ui/skeleton";
 
 type Item = {
 	title: string;
@@ -51,30 +52,31 @@ function MainBox() {
 			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>
 				서울시 200여 도서관 장서 900만 권을 검색하세요.
 			</Text>
-			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>
-				베스트 셀러
+			<Flex spaceX={1.5} mx={2} py={3} alignItems={"end"}>
+				<Text fontWeight={600} fontSize={"xl"}>
+					베스트 셀러
+				</Text>
 				<BookSelectDrawer
 					buttonComp={
 						<Flex
 							display={"inline-flex"}
 							alignItems={"center"}
-							px={2}
-							py={1}
 							gapX={1}
 							fontWeight={600}
 							fontSize={"sm"}
 							color={"GrayText"}
 							cursor={"button"}
+							pb={0.5}
 						>
 							{chosenLibs[0].libName}{" "}
 							{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개 도서관`}
-							<Icon size={"sm"} color={"gray"}>
+							<Icon fontSize={"sm"}>
 								<IoIosArrowDropdownCircle />
 							</Icon>
 						</Flex>
 					}
 				/>
-			</Text>
+			</Flex>
 			<TabArr />
 		</>
 	);
@@ -100,11 +102,12 @@ function TabArr() {
 			variant={"subtle"}
 			display={"flex"}
 			flexDirection={"column"}
+			flexGrow={1}
 		>
 			<Tabs.List
 				overflowX={"scroll"}
 				whiteSpace="nowrap"
-				spaceX={3}
+				spaceX={2}
 				mx={2}
 				alignItems={"center"}
 			>
@@ -119,7 +122,7 @@ function TabArr() {
 						borderWidth={1}
 						rounded="2xl"
 						fontSize={"xs"}
-						_selected={{ bg: "gray.200", color: "black" }}
+						_selected={{ bg: "gray.200", color: "black", fontWeight: 700 }}
 						fontWeight={600}
 					>
 						{v.korName}
@@ -128,7 +131,7 @@ function TabArr() {
 			</Tabs.List>
 			{tabs.map((v) => {
 				return (
-					<Tabs.Content key={v.engName} value={v.engName}>
+					<Tabs.Content key={v.engName} value={v.engName} flexGrow={1} display={"flex"}>
 						<BestSeller category={v.engName} />
 					</Tabs.Content>
 				);
@@ -140,24 +143,31 @@ function TabArr() {
 function BestSeller({ category }: { category: string }) {
 	const { chosenLibs: selectedLibs } = useLibStore();
 	const libCodes = selectedLibs.map((v) => v.libCode).join(",");
-	const { data, error, isLoading } = useSWR<BestSellers>(
+	const { data, isLoading } = useSWR<BestSellers>(
 		`/book/bestseller/${category}?libCode=${libCodes}`,
 		fetcher
 	);
 
 	return (
-		<Box flexGrow={1} width={"100%"} px={4}>
-			<Flex flexGrow={1} direction={"column"} spaceY={5}>
-				{data?.items
-					.sort((a, b) => a.bestRank - b.bestRank)
-					.map((v) => <BookCard result={v} key={v.isbn13} selectedLibs={selectedLibs} />)}
-			</Flex>
-		</Box>
+		<Flex flexGrow={1} justifyContent={"center"} px={4}>
+			{isLoading ? (
+				<LoadingSkeleton />
+			) : (
+				<Flex flexGrow={1} direction={"column"} spaceY={5}>
+					{data?.items
+						.sort((a, b) => a.bestRank - b.bestRank)
+						.map((v) => (
+							<BookCard result={v} key={v.isbn13} selectedLibs={selectedLibs} />
+						))}
+				</Flex>
+			)}
+		</Flex>
 	);
 }
 
 function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibInfo[] }) {
 	const [mainTitle, subTitle] = result.title.split(" - ");
+
 	return (
 		<Link to={`/book/detail/${result.isbn13}`}>
 			<Flex spaceX={4}>
@@ -195,5 +205,23 @@ function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibInf
 				</Flex>
 			</Flex>
 		</Link>
+	);
+}
+function LoadingSkeleton() {
+	return (
+		<Box spaceY={10} w={"full"}>
+			{Array.from([0, 1, 2, 3, 4]).map((l) => (
+				<Flex spaceX={4} key={l}>
+					<Flex basis={"1/4"}>
+						<Skeleton aspectRatio={"1/1.414"} w={"full"} h={"full"} />
+					</Flex>
+					<Flex basis={"3/4"} direction={"column"} spaceY={4} my={1}>
+						<SkeletonText noOfLines={2} />
+						<SkeletonText flexGrow={1} noOfLines={1} w={"70%"} />
+						<SkeletonText flexGrow={1} noOfLines={1} w={"40%"} />
+					</Flex>
+				</Flex>
+			))}
+		</Box>
 	);
 }
