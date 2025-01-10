@@ -34,7 +34,10 @@ export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }
 						<Box my={1}>
 							{chosenLibs.length === 1 ? (
 								<>
-									<OptionItem label={chosenLibs[0].libName} />
+									<OptionItem
+										label={chosenLibs[0].libName}
+										distance={chosenLibs[0].distance}
+									/>
 									<Text
 										my={10}
 										textAlign={"center"}
@@ -49,6 +52,7 @@ export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }
 									<OptionItem
 										key={v.libCode}
 										label={v.libName}
+										distance={v.distance}
 										onDelete={() => removeLib(v.libCode)}
 									/>
 								))
@@ -61,7 +65,15 @@ export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }
 	);
 };
 
-function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void }) {
+function OptionItem({
+	label,
+	distance,
+	onDelete,
+}: {
+	label: string;
+	distance: number;
+	onDelete?: () => void;
+}) {
 	return (
 		<Flex
 			justifyContent={"space-between"}
@@ -70,7 +82,10 @@ function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void 
 			px={2}
 			height={"10"}
 		>
-			<Text>{label}</Text>
+			<Flex spaceX={2}>
+				<Text>{label}</Text>
+				{distance !== 0 && <Text color={"GrayText"}>{distance}km</Text>}
+			</Flex>
 			{onDelete && <CloseButton variant={"plain"} onClick={onDelete} size={"sm"} />}
 		</Flex>
 	);

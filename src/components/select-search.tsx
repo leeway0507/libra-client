@@ -69,6 +69,10 @@ export default function SelectSearch() {
 							...base,
 							width: "100%",
 						}),
+						placeholder: (base) => ({
+							...base,
+							color: "var(--chakra-colors-black)",
+						}),
 						control: (base) => ({
 							...base,
 							"&:hover": { borderColor: "gray" },
