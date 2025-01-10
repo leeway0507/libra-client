@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type LibBook = {
-	libCode: number;
+	libCode: string;
 	bookCode: string;
 };
 
@@ -17,11 +17,6 @@ export type BookInfo = {
 	desc?: string;
 	libBooks: LibBook[];
 };
-// export type BookLibInfo = {
-// 	libCode: string;
-// 	libName: string;
-// 	classNum: string;
-// };
 
 export interface BookMarkState {
 	bookMarkList: BookInfo[];
@@ -71,9 +66,5 @@ export const useBookMarkStore = create<BookMarkState>()(
 const _deleteBookMark = (bookMarkList: BookInfo[], book: BookInfo) =>
 	bookMarkList.filter((b) => b.isbn !== book.isbn);
 const _addBookMark = (bookMarkList: BookInfo[], book: BookInfo) => [book, ...bookMarkList];
-
-// {
-// 	b.libInfo = b.libInfo.filter(l=>l.libCode ===libCode )
-// }
 
 export default useBookMarkStore;

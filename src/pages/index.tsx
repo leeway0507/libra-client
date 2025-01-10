@@ -1,9 +1,12 @@
-import { Box, Flex, Span, Tabs, Text } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
 import { Link } from "react-router";
-import useLibStore, { LibProps } from "@/hooks/store/lib";
+import useLibStore from "@/hooks/store/lib";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { BookSelectDrawer } from "@/components/book-select-drawer";
+import { LibInfo } from "./library";
 
 type Item = {
 	title: string;
@@ -41,11 +44,36 @@ const fetcher = (path: string) =>
 	fetch(new URL(path, import.meta.env.VITE_BACKEND_API)).then((res) => res.json());
 
 function MainBox() {
+	const { chosenLibs } = useLibStore();
+
 	return (
 		<>
-			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>서울시 200여 도서관 장서 900만 권을 검색하세요.</Text>
-			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>베스트 셀러
-			<Span px={2} py={3} fontWeight={600} fontSize={"sm"} color={"GrayText"}>해당 도서관에서 보유중인  베스트셀러 입니다.</Span>
+			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>
+				서울시 200여 도서관 장서 900만 권을 검색하세요.
+			</Text>
+			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>
+				베스트 셀러
+				<BookSelectDrawer
+					buttonComp={
+						<Flex
+							display={"inline-flex"}
+							alignItems={"center"}
+							px={2}
+							py={1}
+							gapX={1}
+							fontWeight={600}
+							fontSize={"sm"}
+							color={"GrayText"}
+							cursor={"button"}
+						>
+							{chosenLibs[0].libName}{" "}
+							{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개 도서관`}
+							<Icon size={"sm"} color={"gray"}>
+								<IoIosArrowDropdownCircle />
+							</Icon>
+						</Flex>
+					}
+				/>
 			</Text>
 			<TabArr />
 		</>
@@ -65,18 +93,33 @@ function TabArr() {
 		{ korName: "자기계발", engName: "selfdev" },
 	];
 	return (
-		<Tabs.Root lazyMount unmountOnExit defaultValue="all" variant={"subtle"} display={"flex"} flexDirection={"column"} size={"sm"}>
-			<Tabs.List overflowX={"scroll"} whiteSpace="nowrap" spaceX={3} mb={2} mx={3}>
+		<Tabs.Root
+			lazyMount
+			unmountOnExit
+			defaultValue="all"
+			variant={"subtle"}
+			display={"flex"}
+			flexDirection={"column"}
+		>
+			<Tabs.List
+				overflowX={"scroll"}
+				whiteSpace="nowrap"
+				spaceX={3}
+				mx={2}
+				alignItems={"center"}
+			>
 				{tabs.map((v) => (
 					<Tabs.Trigger
 						key={v.engName}
 						value={v.engName}
 						flexShrink={0}
 						px={4}
+						h={0}
+						py={3.5}
 						borderWidth={1}
 						rounded="2xl"
 						fontSize={"xs"}
-						_selected={{"bg":"gray.200", color:"black"}}
+						_selected={{ bg: "gray.200", color: "black" }}
 						fontWeight={600}
 					>
 						{v.korName}
@@ -95,9 +138,9 @@ function TabArr() {
 }
 
 function BestSeller({ category }: { category: string }) {
-	const { selectedLibs } = useLibStore();
-	const libCodes = selectedLibs.map((v) => v.value).join(",");
-	const { data } = useSWR<BestSellers>(
+	const { chosenLibs: selectedLibs } = useLibStore();
+	const libCodes = selectedLibs.map((v) => v.libCode).join(",");
+	const { data, error, isLoading } = useSWR<BestSellers>(
 		`/book/bestseller/${category}?libCode=${libCodes}`,
 		fetcher
 	);
@@ -113,7 +156,7 @@ function BestSeller({ category }: { category: string }) {
 	);
 }
 
-function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibProps[] }) {
+function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibInfo[] }) {
 	const [mainTitle, subTitle] = result.title.split(" - ");
 	return (
 		<Link to={`/book/detail/${result.isbn13}`}>
@@ -145,7 +188,7 @@ function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibPro
 								opacity={"0.55"}
 								whiteSpace={"nowrap"}
 							>
-								{selectedLibs.find((s) => s.value === v)?.label}
+								{selectedLibs.find((s) => s.libCode === v)?.libName}
 							</Box>
 						))}
 					</Flex>

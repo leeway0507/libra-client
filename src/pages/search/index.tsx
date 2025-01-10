@@ -214,11 +214,11 @@ const Loading = () => {
 const useBookSearch = () => {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
-	const libs = useLibStore((state) => state.selectedLibs);
+	const { chosenLibs } = useLibStore();
 	const url = new URL(window.location.href);
 	const handleRedirect = (keyword: string) => {
 		url.searchParams.set("q", keyword);
-		url.searchParams.set("libCode", libs.map((v) => v.value).join());
+		url.searchParams.set("libCode", chosenLibs.map((v) => v.value).join());
 		navigate(url.search, { replace: true });
 	};
 	const removeUrl = () => {
@@ -259,64 +259,18 @@ const showMaxString = (str: string) => {
 };
 
 function FilterBox() {
-	const { optionLibs: defaultLibs, selectedLibs, removeLib, changeLibs } = useLibStore();
 	return (
 		<Flex gapX={2} alignItems={"center"} py={2} px={3} mb={2}>
 			<Icon size={"sm"}>
 				<IoFilter />
 			</Icon>
-			<BookSelectDrawer buttonName="도서관" titleName="필터">
-				<Box height={"96"}>
-					{/* {JSON.stringify(libs)} */}
-					{selectedLibs !== undefined && (
-						<SelectSearch
-							availableOptions={defaultLibs}
-							selectedOptions={selectedLibs}
-							setSelectedOptions={changeLibs}
-							placeHolder="도서관 검색"
-						/>
-					)}
-
-					<Box my={1}>
-						{selectedLibs.length === 1 ? (
-							<>
-								<OptionItem label={selectedLibs[0].label} />
-								<Text
-									my={10}
-									textAlign={"center"}
-									color={"GrayText"}
-									textDecoration={"underline"}
-								>
-									하나 이상의 도서관을 선택하세요.
-								</Text>
-							</>
-						) : (
-							selectedLibs.map((v) => (
-								<OptionItem
-									key={v.value}
-									label={v.label}
-									onDelete={() => removeLib(v.value)}
-								/>
-							))
-						)}
-					</Box>
-				</Box>
-			</BookSelectDrawer>
-		</Flex>
-	);
-}
-
-function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void }) {
-	return (
-		<Flex
-			justifyContent={"space-between"}
-			alignItems={"center"}
-			_hover={{ bg: "gray.200" }}
-			px={2}
-			height={"10"}
-		>
-			<Text>{label}</Text>
-			{onDelete && <CloseButton variant={"plain"} onClick={onDelete} size={"sm"} />}
+			<BookSelectDrawer
+				buttonComp={
+					<Button variant="subtle" size={"xs"} px={3}>
+						도서관
+					</Button>
+				}
+			/>
 		</Flex>
 	);
 }

@@ -1,58 +1,88 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { libCodeAsKey } from "./rawdata/libcode";
-export type LibProps = {
-	value: string;
-	label: string;
-};
+import { libInfoSeoul } from "./rawdata/lib-info-seoul";
+import { LibLocation } from "./geo-location";
+import { getDistance } from "geolib";
 
-type libCodeProps = {
-	district: string;
+export type LibInfo = {
+	libCode: string;
 	libName: string;
+	address: string;
+	tel: string;
+	latitude: number;
+	longitude: number;
+	homepage: string;
+	closed: string;
+	operatingTime: string;
+	district: string;
+	distance: number;
 };
 
 export interface LibState {
-	libCodes: {
-		[key: string]: libCodeProps;
-	};
-	optionLibs: LibProps[];
-	selectedLibs: LibProps[];
-	addLib: (lib: LibProps) => void;
-	changeLibs: (libs: LibProps[]) => void;
+	optionLibs: LibInfo[];
+	chosenLibs: LibInfo[];
+	addLib: (lib: LibInfo) => void;
+	changechosenLibs: (libs: LibInfo[]) => void;
+	updateDistance: (userLocation: LibLocation) => void;
 	removeLib: (libCode: string) => void;
 }
 
-const optionLibs = Object.entries(libCodeAsKey).map(([libCode, value]) => ({
-	value: libCode,
-	label: value.libName,
-}));
-
 const defaultLibs = [
 	{
-		label: "서울도서관",
-		value: "111314",
+		libCode: "111314",
+		libName: "서울도서관",
+		address: "서울특별시 중구 세종대로 110",
+		tel: "02-2133-0300",
+		latitude: 37.5663245,
+		longitude: 126.977752,
+		homepage: "http://lib.seoul.go.kr/",
+		closed: "매주 월요일 / 공휴일",
+		operatingTime: "화~금 09:00~21:00 / 토,일 09:00~18:00",
+		district: "서울시",
+		distance: 0,
 	},
 ];
 
 const useLibStore = create<LibState>()(
 	persist(
 		(set) => ({
-			selectedLibs: defaultLibs,
-			optionLibs: optionLibs,
-			libCodes: libCodeAsKey,
-			addLib: (lib: LibProps) => {
+			chosenLibs: defaultLibs,
+			optionLibs: libInfoSeoul,
+			addLib: (lib: LibInfo) => {
 				set((state) => ({
-					selectedLibs: [...state.selectedLibs, lib],
+					chosenLibs: [...state.chosenLibs, lib],
 				}));
 			},
-			changeLibs: (libs: LibProps[]) => {
+			changechosenLibs: (libs: LibInfo[]) => {
 				set(() => ({
-					selectedLibs: libs,
+					chosenLibs: libs,
+				}));
+			},
+			updateDistance: (userLocation: LibLocation) => {
+				set((state) => ({
+					chosenLibs: state.chosenLibs
+						.map((v) => ({
+							...v,
+							distance: calcDistance(
+								{ longitude: v.longitude, latitude: v.latitude },
+								userLocation
+							),
+						}))
+						.sort((a, b) => a.distance - b.distance),
+					optionLibs: state.optionLibs
+						.map((v) => ({
+							...v,
+							distance: calcDistance(
+								{ longitude: v.longitude, latitude: v.latitude },
+								userLocation
+							),
+						}))
+						.sort((a, b) => a.distance - b.distance),
 				}));
 			},
 			removeLib: (libCode) => {
 				set((state) => ({
-					selectedLibs: state.selectedLibs.filter((l) => l.value !== libCode),
+					chosenLibs: state.chosenLibs.filter((l) => l.libName !== libCode),
 				}));
 			},
 		}),
@@ -61,5 +91,11 @@ const useLibStore = create<LibState>()(
 		}
 	)
 );
+
+function calcDistance(from: LibLocation, userLocation: LibLocation): number {
+	const meters = getDistance(from, userLocation);
+	const kilometers = meters / 1000;
+	return parseFloat(kilometers.toFixed(1));
+}
 
 export default useLibStore;

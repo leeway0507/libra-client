@@ -26,7 +26,8 @@ type BookDetailReq = {
 	libCodes: string[];
 };
 
-export interface LibBookStatus extends LibBook {
+export interface LibBookStatus {
+	bookCode: string;
 	libName: string;
 	bookStatus?: string;
 }
@@ -61,11 +62,11 @@ const fetcher = async (path: string, body: BookDetailReq) => {
 
 export default function Page() {
 	const { isbn } = useParams();
-	const { selectedLibs } = useLibStore();
+	const { chosenLibs } = useLibStore();
 	const { bookMarkList } = useBookMarkStore();
 	const [srchParams] = useSearchParams();
-
 	const pageType = srchParams.get("type");
+
 	const reqBody: BookDetailReq = {
 		isbn: isbn!,
 		libCodes:
@@ -73,16 +74,17 @@ export default function Page() {
 				? bookMarkList
 						.find((b) => b.isbn === isbn)
 						?.libBooks.map((v) => v.libCode.toString()) || []
-				: selectedLibs.map((v) => v.value),
+				: chosenLibs.map((v) => v.libCode),
 	};
 
-	const cacheKey = JSON.stringify({ path: "/book/detail", body: reqBody });
+	const swrCacheKey = JSON.stringify({ path: "/book/detail", reqBody: reqBody });
 
 	const { data, error, isLoading } = useSWR<BookInfo>(
-		cacheKey,
+		swrCacheKey,
 		() => fetcher("/book/detail", reqBody),
 		{
 			keepPreviousData: true,
+			refreshInterval: 0,
 		}
 	);
 
@@ -100,7 +102,12 @@ export default function Page() {
 				<BookCard bookInfo={data} />
 				<Flex direction="column" mx={2} flexGrow={1}>
 					{data.toc && <Toc text={data.toc} />}
-					<BorrowStatus data={data.libBooks} />
+					<Box spaceY={2}>
+						<Flex justifyContent={"space-between"} alignItems={"center"}>
+							<SubTitle>대여정보</SubTitle>
+						</Flex>
+						<BorrowStatusTable libBooks={data.libBooks} />
+					</Box>
 				</Flex>
 			</Box>
 		</>
@@ -187,22 +194,7 @@ function Toc({ text }: { text: string }) {
 	);
 }
 
-function BorrowStatus({ data }: { data: LibBook[] }) {
-	const { libCodes } = useLibStore();
-	const LibBookStatus = data.map((b) => ({ ...b, libName: libCodes[b.libCode]?.libName }));
-
-	return (
-		<Box spaceY={2}>
-			<Flex justifyContent={"space-between"} alignItems={"center"}>
-				<SubTitle>대여정보</SubTitle>
-			</Flex>
-			<BorrowStatusTable libBooks={LibBookStatus} />
-		</Box>
-	);
-}
-
-function BorrowStatusTable({ libBooks }: { libBooks: LibBookStatus[] }) {
-	const { isbn } = useParams();
+function BorrowStatusTable({ libBooks }: { libBooks: LibBook[] }) {
 	return (
 		<Table.Root size="sm">
 			<Table.Header>
@@ -213,38 +205,43 @@ function BorrowStatusTable({ libBooks }: { libBooks: LibBookStatus[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body fontSize={"xs"}>
-				{libBooks.map((item) => (
-					<Row isbn={isbn!} req={item} key={item.libCode} />
+				{libBooks.map((libBook) => (
+					<Row defaultItem={libBook} key={libBook.libCode} />
 				))}
 			</Table.Body>
 		</Table.Root>
 	);
 }
 
-function Row({ isbn, req }: { isbn: string; req: LibBookStatus }) {
-	const fetcher = (url: string) => fetch(url).then((res) => res.json());
+function Row({ defaultItem }: { defaultItem: LibBook }) {
+	const { optionLibs } = useLibStore();
+	const { isbn } = useParams();
 	const {
-		data: bookStatus,
+		data: scrapResp,
 		error,
 		isLoading,
 	} = useSWR<LibBookStatus[]>(
-		new URL(`scrap/${req.libCode}/${isbn}`, import.meta.env.VITE_BACKEND_API).toString(),
-		fetcher
+		new URL(
+			`scrap/${defaultItem.libCode}/${isbn}`,
+			import.meta.env.VITE_BACKEND_API
+		).toString(),
+		(url: string) => fetch(url).then((res) => res.json())
 	);
 
-	const getCellValue = (key: "bookCode" | "bookStatus", fallbackValue: string | undefined) => {
-		if (isLoading) return <SkeletonText noOfLines={1} />;
-		if (error || !bookStatus) return fallbackValue || "-";
+	const libInfo = optionLibs.find((l) => l.libCode === defaultItem.libCode);
 
-		const matchedData = bookStatus.find((v) => req.libName.includes(v.libName));
+	const getCellValue = (key: "bookCode" | "bookStatus", fallbackValue?: string) => {
+		if (isLoading) return <SkeletonText noOfLines={1} />;
+		if (error || !scrapResp) return fallbackValue || "-";
+		const matchedData = scrapResp.find((v) => v.libName.includes(libInfo?.libName!));
 		return matchedData?.[key] || fallbackValue || "-";
 	};
 
 	return (
-		<Table.Row key={req.libName}>
-			<Table.Cell>{req.libName}</Table.Cell>
-			<Table.Cell>{getCellValue("bookCode", req.bookCode)}</Table.Cell>
-			<Table.Cell textAlign="end">{getCellValue("bookStatus", req.bookStatus)}</Table.Cell>
+		<Table.Row key={defaultItem.libCode}>
+			<Table.Cell>{libInfo!.libName}</Table.Cell>
+			<Table.Cell>{getCellValue("bookCode", defaultItem.bookCode)}</Table.Cell>
+			<Table.Cell textAlign="end">{getCellValue("bookStatus")}</Table.Cell>
 		</Table.Row>
 	);
 }

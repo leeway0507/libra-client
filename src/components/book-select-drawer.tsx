@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import {
 	DialogBody,
 	DialogCloseTrigger,
@@ -8,23 +8,16 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import useLibStore from "@/hooks/store/lib";
+import SelectSearch from "./select-search";
+import { CloseButton } from "./ui/close-button";
 
-export const BookSelectDrawer = ({
-	children,
-	buttonName,
-	titleName,
-}: {
-	children: React.ReactNode;
-	buttonName: string;
-	titleName: string;
-}) => {
+export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }) => {
+	const { chosenLibs, removeLib } = useLibStore();
+
 	return (
 		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"sm"}>
-			<DialogTrigger asChild>
-				<Button variant="subtle" size={"xs"} px={3}>
-					{buttonName}
-				</Button>
-			</DialogTrigger>
+			<DialogTrigger asChild>{buttonComp}</DialogTrigger>
 			<DialogContent mb={0}>
 				<DialogHeader
 					position={"relative"}
@@ -32,11 +25,53 @@ export const BookSelectDrawer = ({
 					justifyContent={"center"}
 					alignItems={"center"}
 				>
-					<DialogTitle>{titleName}</DialogTitle>
+					<DialogTitle>{"도서관을 선택하세요"}</DialogTitle>
 					<DialogCloseTrigger />
 				</DialogHeader>
-				<DialogBody>{children}</DialogBody>
+				<DialogBody>
+					<Box height={"96"}>
+						{chosenLibs !== undefined && <SelectSearch />}
+						<Box my={1}>
+							{chosenLibs.length === 1 ? (
+								<>
+									<OptionItem label={chosenLibs[0].libName} />
+									<Text
+										my={10}
+										textAlign={"center"}
+										color={"GrayText"}
+										textDecoration={"underline"}
+									>
+										하나 이상의 도서관을 선택하세요.
+									</Text>
+								</>
+							) : (
+								chosenLibs.map((v) => (
+									<OptionItem
+										key={v.libCode}
+										label={v.libName}
+										onDelete={() => removeLib(v.libCode)}
+									/>
+								))
+							)}
+						</Box>
+					</Box>
+				</DialogBody>
 			</DialogContent>
 		</DialogRoot>
 	);
 };
+
+function OptionItem({ label, onDelete }: { label: string; onDelete?: () => void }) {
+	return (
+		<Flex
+			justifyContent={"space-between"}
+			alignItems={"center"}
+			_hover={{ bg: "gray.200" }}
+			px={2}
+			height={"10"}
+		>
+			<Text>{label}</Text>
+			{onDelete && <CloseButton variant={"plain"} onClick={onDelete} size={"sm"} />}
+		</Flex>
+	);
+}

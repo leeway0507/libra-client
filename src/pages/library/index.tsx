@@ -1,11 +1,6 @@
-import { Box, Flex, Text, Image, Icon, Button, Grid, GridItem } from "@chakra-ui/react";
-import Select, { components, OptionProps } from "react-select";
+import { Box, Flex, Text, Image, Button, Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
-import { libInfoSeoul } from "../../hooks/store/rawdata/lib-info-seoul";
 import useLibStore from "@/hooks/store/lib";
-import { useEffect, useState } from "react";
-import { IoMdLocate } from "react-icons/io";
-import { getDistance } from "geolib";
 import { Tag } from "@/components/ui/tag";
 import { CiClock2 } from "react-icons/ci";
 import { CloseButton } from "@/components/ui/close-button";
@@ -21,7 +16,9 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 
-type LibInfo = {
+import SelectSearch from "@/components/select-search";
+
+export type LibInfo = {
 	libCode: string;
 	libName: string;
 	address: string;
@@ -57,94 +54,31 @@ export default function Page() {
 }
 
 function MainBox() {
-	const { changeLibs, selectedLibs, removeLib } = useLibStore();
-	const [libSeoul, setLibSeoul] = useState<LibInfo[]>(libInfoSeoul);
+	const { chosenLibs, removeLib } = useLibStore();
 
-	const selectedLibInfo = selectedLibs
-		.map((v) => libSeoul.find((v2) => v.value === v2.libCode))
-		.filter((v): v is LibInfo => v !== undefined);
-	const [selected, setSelced] = useState<LibInfo[]>(selectedLibInfo);
-
-	useEffect(() => {
-		changeLibs(selected.map((v) => ({ label: v.libName, value: v.libCode })));
-	}, [selected]);
-
-	const { getLocation, userLocation } = useGetGeolocation();
-
-	const onRemove = (libCode: string) => {
-		removeLib(libCode);
-		setSelced((selected) => selected.filter((v) => v.libCode !== libCode));
-	};
-
-	useEffect(() => {
-		if (userLocation.latitude !== 0 && userLocation.latitude !== 0) {
-			setLibSeoul((libSeoul) =>
-				libSeoul
-					.map((v) => ({
-						...v,
-						distance: convertMetersToKilometers(
-							{ longitude: v.longitude, latitude: v.latitude },
-							userLocation
-						),
-					}))
-					.sort((a, b) => a.distance - b.distance)
-			);
-			setSelced((selected) =>
-				selected
-					.map((v) => ({
-						...v,
-						distance: convertMetersToKilometers(
-							{ longitude: v.longitude, latitude: v.latitude },
-							userLocation
-						),
-					}))
-					.sort((a, b) => a.distance - b.distance)
-			);
-		}
-	}, [userLocation]);
 	return (
 		<Box bgColor={"Background"} flexGrow={1} width={"100%"} px={1} py={2}>
-			<Flex gapX={1}>
-				<Flex flexGrow={1}>
-					<SelectSearch
-						availableOptions={libSeoul}
-						selectedOptions={selected}
-						setSelectedOptions={setSelced}
-						placeHolder="도서관 찾기"
-					/>
-				</Flex>
-				<Button variant="outline" size={"sm"} py={0} onClick={getLocation}>
-					<Icon>
-						<IoMdLocate />
-					</Icon>
-				</Button>
-			</Flex>
+			<SelectSearch />
 			<Box my={4}>
 				<Text fontSize={"md"} fontWeight={600}>
-					선택한 도서관 {selected.length}/5
+					선택한 도서관 {chosenLibs.length}/5
 				</Text>
 				<Box>
-					{selected.length > 1 ? (
-						selected.map((v) => (
+					{chosenLibs.length > 1 ? (
+						chosenLibs.map((v) => (
 							<LibItem
 								key={v.libCode}
 								item={v}
-								onRemove={() => onRemove(v.libCode)}
+								onRemove={() => removeLib(v.libCode)}
 							/>
 						))
 					) : (
-						<LibItem item={selected[0]} />
+						<LibItem item={chosenLibs[0]} />
 					)}
 				</Box>
 			</Box>
 		</Box>
 	);
-}
-
-function convertMetersToKilometers(from: Location, to: Location): number {
-	const meters = getDistance(from, to);
-	const kilometers = meters / 1000;
-	return parseFloat(kilometers.toFixed(1));
 }
 
 function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
@@ -157,9 +91,6 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 					w="90%"
 					fit="contain"
 					src={`/lib-logo/district/${district[item.district as keyof typeof district]}.png`}
-					// onError={({ currentTarget }) => {
-					// 	currentTarget.src = `/lib-logo/district/${district[item.district as keyof typeof district]}.png`;
-					// }}
 					alt={item.libName}
 				/>
 			</Flex>
@@ -198,82 +129,10 @@ function LibItem({ item, onRemove }: { item: LibInfo; onRemove?: () => void }) {
 	);
 }
 
-const Option = (props: OptionProps<LibInfo>) => {
-	const { data } = props;
-
-	return (
-		<components.Option {...props}>
-			<Flex color={"HighlightText"} fontWeight={500} justifyContent={"space-between"}>
-				<Text>
-					[{data.district}] {data.libName}
-				</Text>
-				{data.distance > 0 && <Text fontSize={"sm"}>{data.distance + "km"}</Text>}
-			</Flex>
-		</components.Option>
-	);
-};
-
-export function SelectSearch({
-	availableOptions,
-	selectedOptions,
-	setSelectedOptions,
-	placeHolder,
-}: SelectFilterProps) {
-	return (
-		<Select
-			value={selectedOptions}
-			onChange={(valArr) => setSelectedOptions(valArr.map((v) => v))}
-			options={availableOptions}
-			getOptionValue={(option) => option.libCode}
-			getOptionLabel={(option) => `${option.district} ${option.libName}`}
-			isMulti
-			isClearable={false}
-			backspaceRemovesValue={false}
-			controlShouldRenderValue={false}
-			components={{ Option: Option }}
-			placeholder={placeHolder || ""}
-			noOptionsMessage={() => "검색 결과가 없습니다."}
-			styles={{
-				container: (base) => ({
-					...base,
-					width: "100%",
-					height: "var(--chakra-sizes-9)",
-				}),
-				control: (base) => ({
-					...base,
-					"&:hover": { borderColor: "gray" },
-					border: "1px solid lightgray",
-					boxShadow: "none",
-					cursor: "text",
-				}),
-				menu: (base) => ({
-					...base,
-					width: "calc(100vw - 8px)",
-					maxWidth: "calc(var(--chakra-sizes-md) - 8px)",
-				}),
-				menuList: (base) => ({
-					...base,
-					maxHeight: "400px",
-					paddingInline: 0,
-					overflow: "scroll",
-				}),
-				option: (base, state) => ({
-					...base,
-					backgroundColor: state.isSelected ? "#e2e8f0" : "white",
-					color: "black",
-					cursor: "pointer",
-					":hover": {
-						backgroundColor: "#e2e8f0",
-					},
-				}),
-			}}
-		/>
-	);
-}
-
 type District = {
 	[key: string]: number;
 };
+
 const district: District = {
 	강남구: 1,
 	강동구: 2,
@@ -303,35 +162,6 @@ const district: District = {
 	교육청: 26,
 	서울시: 27,
 };
-
-type Location = { latitude: number; longitude: number };
-
-function useGetGeolocation() {
-	const [userLocation, setUserLocation] = useState<Location>({ latitude: 0, longitude: 0 });
-	const [error, setError] = useState<string>("");
-
-	const getLocation = () => {
-		if (!navigator.geolocation) {
-			setError("Geolocation is not supported by your browser");
-			return;
-		}
-
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				setUserLocation({
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude,
-				});
-				setError(""); // Clear any previous errors
-			},
-			(err) => {
-				setError(err.message);
-			}
-		);
-	};
-
-	return { getLocation, userLocation, error };
-}
 
 const OperatingTime = ({ children }: { children: React.ReactNode }) => {
 	return (
