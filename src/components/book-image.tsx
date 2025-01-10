@@ -1,36 +1,28 @@
-import { Center, Image, Box } from "@chakra-ui/react";
-import { useState } from "react";
-
-export function ImageCover({ children }: { children: React.ReactNode }) {
-	return (
-		<Center rounded={4} shadow={"md"} mb={1} w="100%">
-			{children}
-		</Center>
-	);
-}
+import { Center, Image } from "@chakra-ui/react";
 
 export default function BookImage({ src }: { src: string }) {
-	const [isError, setIsError] = useState(false);
-
-	return (
-		<ImageCover>
-			{isError ? (
-				<Box aspectRatio={"1/1.414"} w="100%">
-					<Center height={"full"}>No Image</Center>
-				</Box>
-			) : (
-				<Image
-					rounded="md"
-					aspectRatio={"1/1.414"}
-					w="100%"
-					fit="fit"
-					src={src}
-					onError={() => {
-						setIsError(true);
-					}}
-					bgColor={"gray.50"}
-				/>
-			)}
-		</ImageCover>
+	return src ? (
+		<Image
+			shadow={"md"}
+			rounded="md"
+			fit={"fit"}
+			src={src}
+			bgColor={"gray.50"}
+			w="100%"
+			mx={"auto"}
+			aspectRatio={"1/1.414"}
+		/>
+	) : (
+		<Center
+			borderWidth={1}
+			rounded={"md"}
+			shadow={"md"}
+			mb={1}
+			w="100%"
+			mx={"auto"}
+			aspectRatio={"1/1.414"}
+		>
+			<Center fontSize={"xs"}>도서 이미지</Center>
+		</Center>
 	);
 }

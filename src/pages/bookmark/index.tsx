@@ -26,7 +26,7 @@ function BookMarkList() {
 	));
 	return bookMarkList.length !== 0 ? (
 		<Flex flexGrow={1} mx={5} my={5}>
-			<Flex gapY={5} flexDirection={"column"}>
+			<Flex gapY={5} flexDirection={"column"} w={"100%"}>
 				{BookMarkArrComponent}
 			</Flex>
 		</Flex>
@@ -45,12 +45,12 @@ function BookMarkCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Link to={`/book/detail/${bookInfo.isbn}?type=bookmark`}>
 			<Flex spaceX={5}>
-				<Flex basis={"1/5"}>
-					<BookImage src={`/book-img/${3}.jpg`} />
+				<Flex basis={"1/4"}>
+					<BookImage src={bookInfo.imageUrl} />
 				</Flex>
-				<Flex basis={"4/5"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
+				<Flex basis={"3/4"} direction={"column"} fontSize={"xs"} color={"GrayText"}>
 					<Text
-						fontSize={"md"}
+						fontSize={"sm"}
 						fontWeight={600}
 						color={"HighlightText"}
 						lineClamp={bookInfo.title.length < 2 ? 0 : 2}

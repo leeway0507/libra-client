@@ -20,6 +20,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
 import { useSearchParams } from "react-router";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
+import { useCheckClamp } from "@/hooks/use-line-count";
 
 type BookDetailReq = {
 	isbn: string;
@@ -27,7 +28,7 @@ type BookDetailReq = {
 };
 
 export interface LibBookStatus {
-	bookCode: string;
+	classNum: string;
 	libName: string;
 	bookStatus?: string;
 }
@@ -41,24 +42,6 @@ class FetchError extends Error {
 		this.name = "FetchError";
 	}
 }
-
-const fetcher = async (path: string, body: BookDetailReq) => {
-	const res = await fetch(new URL(path, import.meta.env.VITE_BACKEND_API), {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(body),
-	});
-	if (!res.ok) {
-		const error = new FetchError("An error occurred while fetching the data.");
-		error.info = res.json();
-		error.status = res.status;
-		throw error;
-	}
-
-	return res.json();
-};
 
 export default function Page() {
 	const { isbn } = useParams();
@@ -89,7 +72,7 @@ export default function Page() {
 	);
 
 	if (isLoading) {
-		return <Loading />;
+		return <LoadingSkeleton />;
 	}
 	if (error?.status === 404) {
 		return <NotFoundPage isbn={isbn} />;
@@ -100,8 +83,9 @@ export default function Page() {
 			<SearchBarMock bookDetail={data} />
 			<Box mx={4}>
 				<BookCard bookInfo={data} />
-				<Flex direction="column" mx={2} flexGrow={1}>
-					{data.toc && <Toc text={data.toc} />}
+				<Flex direction="column" mx={2} flexGrow={1} spaceY={4}>
+					{data.description && <Content title="책소개" text={data.description} />}
+					{data.toc && <Content title="목차" text={data.toc} />}
 					<Box spaceY={2}>
 						<Flex justifyContent={"space-between"} alignItems={"center"}>
 							<SubTitle>대여정보</SubTitle>
@@ -113,6 +97,25 @@ export default function Page() {
 		</>
 	);
 }
+
+const fetcher = async (path: string, body: BookDetailReq) => {
+	const res = await fetch(new URL(path, import.meta.env.VITE_BACKEND_API), {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(body),
+	});
+	if (!res.ok) {
+		const error = new FetchError("An error occurred while fetching the data.");
+		error.info = res.json();
+		error.status = res.status;
+		throw error;
+	}
+
+	return res.json();
+};
+
 function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
 	return (
 		<Flex my={1} justifyContent={"space-between"} alignItems={"center"}>
@@ -168,7 +171,7 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	return (
 		<Flex spaceX={4}>
 			<Flex basis={"1/4"}>
-				<BookImage src={`/book-img/${3}.jpg`} />
+				<BookImage src={bookInfo.imageUrl} />
 			</Flex>
 			<Flex basis={"3/4"} direction={"column"} color={"GrayText"} fontSize={"sm"}>
 				<Text color={"HighlightText"} fontWeight={600} fontSize={"md"}>
@@ -182,15 +185,64 @@ function BookCard({ bookInfo }: { bookInfo: BookInfo }) {
 	);
 }
 
-function Toc({ text }: { text: string }) {
+function Content({ title, text }: { title: string; text: string }) {
+	const { contentRef, isClamped } = useCheckClamp();
 	return (
-		<Box spaceY={2} mt={3}>
-			<SubTitle>목차</SubTitle>
-			<Text lineClamp={text.length < 10 ? 0 : 10} whiteSpace={"pre-wrap"} fontSize={"sm"}>
+		<Box mt={3}>
+			<SubTitle>{title}</SubTitle>
+			<Text lineClamp={7} whiteSpace={"pre-wrap"} fontSize={"sm"} ref={contentRef}>
 				{text}
 			</Text>
-			<SpecPage buttonName="더보기" content={text} />
+			{isClamped && <SpecPage buttonName="더보기" content={text} paramName={title} />}
 		</Box>
+	);
+}
+
+function SpecPage({
+	buttonName,
+	content,
+	paramName,
+}: {
+	buttonName: string;
+	content: string;
+	paramName: string;
+}) {
+	const [searchParams, setSearchParams] = useSearchParams();
+	const isOpen = searchParams.get(paramName);
+
+	const handleChange = () => {
+		setSearchParams((prev) => {
+			const newParams = new URLSearchParams(prev);
+			isOpen ? newParams.delete(paramName) : newParams.set(paramName, "true");
+			return newParams;
+		});
+	};
+	const navigation = useNavigate();
+	return (
+		<DialogRoot
+			scrollBehavior={"inside"}
+			placement={"center"}
+			lazyMount
+			open={Boolean(isOpen)}
+			onOpenChange={() => navigation(-1)}
+		>
+			<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
+				{buttonName}
+			</Button>
+			<DialogContent my={0} maxHeight={"100dvh"}>
+				<DialogHeader px={2} py={1}>
+					<DialogCloseBaseTrigger>
+						<Button variant={"plain"} px={0}>
+							<Icon size="lg" aria-label="back">
+								<IoIosArrowBack />
+							</Icon>
+							<Text>뒤로가기</Text>
+						</Button>
+					</DialogCloseBaseTrigger>
+				</DialogHeader>
+				<DialogBody whiteSpace={"pre-wrap"}>{content}</DialogBody>
+			</DialogContent>
+		</DialogRoot>
 	);
 }
 
@@ -230,7 +282,7 @@ function Row({ defaultItem }: { defaultItem: LibBook }) {
 
 	const libInfo = optionLibs.find((l) => l.libCode === defaultItem.libCode);
 
-	const getCellValue = (key: "bookCode" | "bookStatus", fallbackValue?: string) => {
+	const getCellValue = (key: "classNum" | "bookStatus", fallbackValue?: string) => {
 		if (isLoading) return <SkeletonText noOfLines={1} />;
 		if (error || !scrapResp) return fallbackValue || "-";
 		const matchedData = scrapResp.find((v) => v.libName.includes(libInfo?.libName!));
@@ -240,52 +292,13 @@ function Row({ defaultItem }: { defaultItem: LibBook }) {
 	return (
 		<Table.Row key={defaultItem.libCode}>
 			<Table.Cell>{libInfo!.libName}</Table.Cell>
-			<Table.Cell>{getCellValue("bookCode", defaultItem.bookCode)}</Table.Cell>
+			<Table.Cell>{getCellValue("classNum", defaultItem.classNum)}</Table.Cell>
 			<Table.Cell textAlign="end">{getCellValue("bookStatus")}</Table.Cell>
 		</Table.Row>
 	);
 }
 
-function SpecPage({ buttonName, content }: { buttonName: string; content: string }) {
-	const [searchParams, setSearchParams] = useSearchParams();
-	const isOpen = searchParams.get("tocOpen");
-
-	const handleChange = () => {
-		setSearchParams((prev) => {
-			const newParams = new URLSearchParams(prev);
-			isOpen ? newParams.delete("tocOpen") : newParams.set("tocOpen", "true");
-			return newParams;
-		});
-	};
-	const navigation = useNavigate();
-	return (
-		<DialogRoot
-			scrollBehavior={"inside"}
-			lazyMount
-			open={Boolean(isOpen)}
-			onOpenChange={() => navigation(-1)}
-		>
-			<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
-				{buttonName}
-			</Button>
-			<DialogContent my={0} maxHeight={"100dvh"}>
-				<DialogHeader px={2} py={1}>
-					<DialogCloseBaseTrigger>
-						<Button variant={"plain"} px={0}>
-							<Icon size="lg" aria-label="back">
-								<IoIosArrowBack />
-							</Icon>
-							<Text>뒤로가기</Text>
-						</Button>
-					</DialogCloseBaseTrigger>
-				</DialogHeader>
-				<DialogBody whiteSpace={"pre-wrap"}>{content}</DialogBody>
-			</DialogContent>
-		</DialogRoot>
-	);
-}
-
-function Loading() {
+function LoadingSkeleton() {
 	return (
 		<Box mx={4} my={8} spaceY={10}>
 			<Flex spaceX={4}>

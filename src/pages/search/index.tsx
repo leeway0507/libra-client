@@ -18,7 +18,6 @@ import { IoIosArrowBack } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { BookSelectDrawer } from "@/components/book-select-drawer";
-import SelectSearch from "@/components/select-search";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
 import { useSearchKeywordStore as useRecentSearchKeywordStore } from "@/hooks/store/search";
@@ -28,8 +27,9 @@ import { BiError } from "react-icons/bi";
 
 import useSWR from "swr";
 import { EmptyState } from "@/components/ui/empty-state";
-import { IoFilter } from "react-icons/io5";
 import BookImage from "@/components/book-image";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { SubTitle } from "@/components/text";
 
 type SearchResult = {
 	isbn: string;
@@ -158,7 +158,7 @@ function MainBox() {
 	);
 
 	return (
-		<Flex flexGrow={1} direction={"column"} mx={3} pb={5}>
+		<Flex flexGrow={1} direction={"column"} mx={5} pb={5}>
 			{!keyword || !libCode ? (
 				<RecentKeyword />
 			) : isLoading ? (
@@ -166,7 +166,7 @@ function MainBox() {
 			) : !error && data ? (
 				<>
 					{isLoading && <Loading />}
-					<Grid templateColumns="repeat(2, 1fr)" columnGap={4} rowGap={8}>
+					<Grid templateColumns="repeat(2, 1fr)" columnGap={8} rowGap={8}>
 						{data.map((result) => (
 							<BookCard key={result.isbn} result={result} />
 						))}
@@ -182,8 +182,8 @@ function BookCard({ result }: { result: SearchResult }) {
 	return (
 		<GridItem>
 			<Link to={`/book/detail/${result.isbn}`}>
-				<BookImage src={`/book-img/${result.isbn}.jpg`} />
-				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"}>
+				<BookImage src={result.imageUrl} />
+				<Flex direction={"column"} fontSize={"xs"} color={"GrayText"} mt={2}>
 					<Text
 						fontSize={"sm"}
 						fontWeight={600}
@@ -218,7 +218,7 @@ const useBookSearch = () => {
 	const url = new URL(window.location.href);
 	const handleRedirect = (keyword: string) => {
 		url.searchParams.set("q", keyword);
-		url.searchParams.set("libCode", chosenLibs.map((v) => v.value).join());
+		url.searchParams.set("libCode", chosenLibs.map((v) => v.libCode).join());
 		navigate(url.search, { replace: true });
 	};
 	const removeUrl = () => {
@@ -232,7 +232,7 @@ function RecentKeyword() {
 	const { handleRedirect } = useBookSearch();
 	return (
 		<Box>
-			<Text>최근 검색어</Text>
+			<SubTitle>최근 검색어</SubTitle>
 			{RecentKeywords.map((keyword) => (
 				<Flex key={keyword.id} _hover={{ bg: "gray.100" }}>
 					<Button
@@ -259,16 +259,30 @@ const showMaxString = (str: string) => {
 };
 
 function FilterBox() {
+	const { chosenLibs } = useLibStore();
 	return (
-		<Flex gapX={2} alignItems={"center"} py={2} px={3} mb={2}>
-			<Icon size={"sm"}>
-				<IoFilter />
-			</Icon>
+		<Flex gapX={2} alignItems={"center"} p={2} mb={2}>
 			<BookSelectDrawer
 				buttonComp={
-					<Button variant="subtle" size={"xs"} px={3}>
-						도서관
-					</Button>
+					<Flex
+						display={"inline-flex"}
+						alignItems={"center"}
+						px={2.5}
+						py={1}
+						gapX={1}
+						fontWeight={600}
+						fontSize={"xs"}
+						color={"GrayText"}
+						cursor={"button"}
+						borderWidth={1}
+						borderRadius={"full"}
+					>
+						{"도서관 :"} {chosenLibs[chosenLibs.length - 1].libName}{" "}
+						{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개`}
+						<Icon size={"sm"} color={"gray"} ms={0.5}>
+							<IoIosArrowDropdownCircle />
+						</Icon>
+					</Flex>
 				}
 			/>
 		</Flex>
