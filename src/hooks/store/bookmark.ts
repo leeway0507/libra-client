@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type LibBook = {
 	libCode: string;
-	bookCode: string;
+	classNum: string;
 };
 
 export type BookInfo = {
@@ -14,7 +14,7 @@ export type BookInfo = {
 	publicationYear: string;
 	imageUrl: string;
 	toc: string;
-	desc?: string;
+	description?: string;
 	libBooks: LibBook[];
 };
 

@@ -82,7 +82,7 @@ const useLibStore = create<LibState>()(
 			},
 			removeLib: (libCode) => {
 				set((state) => ({
-					chosenLibs: state.chosenLibs.filter((l) => l.libName !== libCode),
+					chosenLibs: state.chosenLibs.filter((l) => l.libCode !== libCode),
 				}));
 			},
 		}),
