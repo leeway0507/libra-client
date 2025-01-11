@@ -6,9 +6,6 @@ import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vite.dev/config/
 export default defineConfig({
-	define: {
-		"process.env.NODE_ENV": '"production"',
-	},
 	plugins: [
 		react({ jsxImportSource: "@emotion/react" }),
 		Pages({ dirs: "src/pages", routeStyle: "next" }),

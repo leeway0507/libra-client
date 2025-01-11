@@ -1,4 +1,4 @@
-import { Box, Flex, Span, Tabs, Text, Icon, Skeleton } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center,Image } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
@@ -8,6 +8,7 @@ import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { BookSelectDrawer } from "@/components/book-select-drawer";
 import { LibInfo } from "./library";
 import { SkeletonText } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type Item = {
 	title: string;
@@ -84,7 +85,7 @@ function MainBox() {
 
 function TabArr() {
 	const tabs = [
-		{ korName: "전체", engName: "all" },
+		{ korName: "일반", engName: "all" },
 		{ korName: "컴퓨터/모바일", engName: "dev" },
 		{ korName: "여행", engName: "travel" },
 		{ korName: "건강/취미", engName: "health" },
@@ -143,7 +144,7 @@ function TabArr() {
 function BestSeller({ category }: { category: string }) {
 	const { chosenLibs: selectedLibs } = useLibStore();
 	const libCodes = selectedLibs.map((v) => v.libCode).join(",");
-	const { data, isLoading } = useSWR<BestSellers>(
+	const { data, error, isLoading } = useSWR<BestSellers>(
 		`/book/bestseller/${category}?libCode=${libCodes}`,
 		fetcher
 	);
@@ -152,6 +153,8 @@ function BestSeller({ category }: { category: string }) {
 		<Flex flexGrow={1} justifyContent={"center"} px={4}>
 			{isLoading ? (
 				<LoadingSkeleton />
+			) : error || !data?.items ? (
+				<NotFound />
 			) : (
 				<Flex flexGrow={1} direction={"column"} spaceY={5}>
 					{data?.items
@@ -182,8 +185,16 @@ function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibInf
 						</Span>
 					</Text>
 					<Text>{result.author}</Text>
-					<Text>{result.publisher}</Text>
-					<Text>{result.pubDate.split("-")[0]}</Text>
+					<Text>
+						{result.publisher} | {result.pubDate.split("-")[0]}
+					</Text>
+
+					<Flex  alignItems={"center"} mt={1}>
+						<Box borderWidth={1} rounded={"xl"} spaceX={0.5} display={"inline-flex"} pe={2}>
+							<Image src="/aladin.png" rounded="full" m={0.5} w={4} aspectRatio={"square"} />
+							<Text>{`알라딘 #${result.bestRank}위`}</Text>
+						</Box>
+					</Flex>
 					<Flex gapX={1.5} gapY={2} pt={2} wrap={"wrap"}>
 						{result.libCode.map((v) => (
 							<Box
@@ -223,5 +234,16 @@ function LoadingSkeleton() {
 				</Flex>
 			))}
 		</Box>
+	);
+}
+
+function NotFound() {
+	return (
+		<Center flexGrow={1}>
+			<EmptyState
+				title="도서가 없습니다."
+				description="도서관을 추가하여 검색 범위를 늘려보세요"
+			/>
+		</Center>
 	);
 }

@@ -36,7 +36,8 @@ function GlobalStyles() {
 				#root {
 					height: 100%;
 					margin: 0;
-				}
+
+				},
 			`}
 		/>
 	);

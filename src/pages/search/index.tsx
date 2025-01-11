@@ -28,8 +28,11 @@ import { BiError } from "react-icons/bi";
 import useSWR from "swr";
 import { EmptyState } from "@/components/ui/empty-state";
 import BookImage from "@/components/book-image";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { MdOutlineArrowDropDown } from "react-icons/md";
 import { SubTitle } from "@/components/text";
+import { HiLibrary } from "react-icons/hi";
+
+
 
 type SearchResult = {
 	isbn: string;
@@ -277,10 +280,13 @@ function FilterBox() {
 						borderWidth={1}
 						borderRadius={"full"}
 					>
-						{"도서관 :"} {chosenLibs[chosenLibs.length - 1].libName}{" "}
+						<Icon size={"sm"}>
+						<HiLibrary />
+						</Icon>
+						 {chosenLibs[chosenLibs.length - 1].libName}{" "}
 						{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개`}
-						<Icon size={"sm"} color={"gray"} ms={0.5}>
-							<IoIosArrowDropdownCircle />
+						<Icon size={"md"} color={"gray"}>
+							<MdOutlineArrowDropDown />
 						</Icon>
 					</Flex>
 				}
