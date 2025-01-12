@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { libInfoSeoul } from "./rawdata/lib-info-seoul";
-import { LibLocation } from "./geo-location";
 import { getDistance } from "geolib";
 
 export type LibInfo = {
@@ -16,6 +15,7 @@ export type LibInfo = {
 	operatingTime: string;
 	district: string;
 	distance: number;
+	isBestSeller?: boolean;
 };
 
 export interface LibState {
@@ -25,7 +25,13 @@ export interface LibState {
 	changechosenLibs: (libs: LibInfo[]) => void;
 	updateDistance: (userLocation: LibLocation) => void;
 	removeLib: (libCode: string) => void;
+	updateLib: (libCode: string, data: Partial<LibInfo>) => void;
 }
+
+export type LibLocation = {
+	latitude: number;
+	longitude: number;
+};
 
 const defaultLibs = [
 	{
@@ -40,6 +46,7 @@ const defaultLibs = [
 		operatingTime: "화~금 09:00~21:00 / 토,일 09:00~18:00",
 		district: "서울시",
 		distance: 0,
+		isBestSeller: true,
 	},
 ];
 
@@ -50,12 +57,12 @@ const useLibStore = create<LibState>()(
 			optionLibs: libInfoSeoul,
 			addLib: (lib: LibInfo) => {
 				set((state) => ({
-					chosenLibs: [...state.chosenLibs, lib],
+					chosenLibs: [...state.chosenLibs, { ...lib, isBestSeller: true }],
 				}));
 			},
 			changechosenLibs: (libs: LibInfo[]) => {
 				set(() => ({
-					chosenLibs: libs,
+					chosenLibs: libs.map((lib) => ({ ...lib, isBestSeller: true })),
 				}));
 			},
 			updateDistance: (userLocation: LibLocation) => {
@@ -85,7 +92,21 @@ const useLibStore = create<LibState>()(
 					chosenLibs: state.chosenLibs.filter((l) => l.libCode !== libCode),
 				}));
 			},
+			updateLib: (libCode, part) => {
+				set((state) => {
+					const targetIdx = state.chosenLibs.findIndex((lib) => lib.libCode === libCode);
+					const target = { ...state.chosenLibs[targetIdx], ...part };
+					return {
+						chosenLibs: [
+							...state.chosenLibs.slice(0, targetIdx),
+							target,
+							...state.chosenLibs.slice(targetIdx + 1),
+						],
+					};
+				});
+			},
 		}),
+
 		{
 			name: "libs",
 		}

@@ -1,14 +1,17 @@
-import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center,Image } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
 import { Link } from "react-router";
 import useLibStore from "@/hooks/store/lib";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { BookSelectDrawer } from "@/components/book-select-drawer";
+import { IoIosArrowDropdownCircle, IoIosAddCircleOutline } from "react-icons/io";
 import { LibInfo } from "./library";
 import { SkeletonText } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import EmblaCarousel, { EmblaCarouselItem } from "@/components/carousel";
+import { EmblaOptionsType } from "embla-carousel";
+import { district } from "./library/district";
+import { BestSellerSelectDrawer } from "@/components/bestseller-select-drawer";
 
 type Item = {
 	title: string;
@@ -42,22 +45,41 @@ export default function Page() {
 	);
 }
 
-const fetcher = (path: string) =>
-	fetch(new URL(path, import.meta.env.VITE_BACKEND_API)).then((res) => res.json());
-
 function MainBox() {
 	const { chosenLibs } = useLibStore();
 
+	const getLibraryLabel = () => {
+		if (chosenLibs.length === 1) {
+			return chosenLibs[0].libName;
+		}
+		const activedLibs = chosenLibs.filter((lib) => lib.isBestSeller);
+
+		const allInclude = activedLibs.length === chosenLibs.length;
+		if (allInclude) {
+			return "도서관 전체";
+		}
+		return (
+			chosenLibs[0].libName +
+			(activedLibs.length - 1 > 0 ? ` 외 ${activedLibs.length - 1}개 도서관` : "")
+		);
+	};
+	const libOptions: EmblaOptionsType = { dragFree: true, containScroll: "trimSnaps" };
+
 	return (
 		<>
-			<Text px={2} py={3} fontWeight={600} fontSize={"xl"}>
-				서울시 200여 도서관 장서 900만 권을 검색하세요.
-			</Text>
+			<Box my={5} mx={1}>
+				<Text fontWeight={600} fontSize={"xl"} pb={3}>
+					내 도서관
+				</Text>
+				<EmblaCarousel options={libOptions}>
+					<LibraryCards />
+				</EmblaCarousel>
+			</Box>
 			<Flex spaceX={1.5} mx={2} py={3} alignItems={"end"}>
 				<Text fontWeight={600} fontSize={"xl"}>
 					베스트 셀러
 				</Text>
-				<BookSelectDrawer
+				<BestSellerSelectDrawer
 					buttonComp={
 						<Flex
 							display={"inline-flex"}
@@ -69,8 +91,7 @@ function MainBox() {
 							cursor={"button"}
 							pb={0.5}
 						>
-							{chosenLibs[0].libName}{" "}
-							{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개 도서관`}
+							{getLibraryLabel()}
 							<Icon fontSize={"sm"}>
 								<IoIosArrowDropdownCircle />
 							</Icon>
@@ -81,6 +102,48 @@ function MainBox() {
 			<TabArr />
 		</>
 	);
+}
+
+function LibraryCards() {
+	const { chosenLibs } = useLibStore();
+	const SLIDES = chosenLibs.map((lib) => (
+		<EmblaCarouselItem key={lib.libCode}>
+			<Box my={4}>
+				<Image
+					rounded="md"
+					maxH={"100%"}
+					maxW={"90px"}
+					fit="fit"
+					src={`/lib-logo/district/${district[lib.district as keyof typeof district]}.png`}
+					alt={lib.libName}
+				/>
+				<Flex display={"inline-flex"} gapX={1}>
+					<Text fontWeight={500}>[{lib.district}]</Text>
+					<Text fontWeight={600}> {lib.libName}</Text>
+				</Flex>
+				{lib.distance != 0 && (
+					<Text fontWeight={500} color={"GrayText"} fontSize={"sm"}>
+						{lib.distance}km
+					</Text>
+				)}
+			</Box>
+		</EmblaCarouselItem>
+	));
+
+	chosenLibs.length < 5 &&
+		SLIDES.push(
+			<EmblaCarouselItem key={"addLib"}>
+				<Link to={"/library"} style={{ height: "100%", width: "100%" }}>
+					<Center fontWeight={500} height={"100%"} gapX={1} color={"GrayText"}>
+						<Icon>
+							<IoIosAddCircleOutline />
+						</Icon>
+						도서관 추가하기
+					</Center>
+				</Link>
+			</EmblaCarouselItem>
+		);
+	return SLIDES;
 }
 
 function TabArr() {
@@ -141,9 +204,15 @@ function TabArr() {
 	);
 }
 
+const fetcher = (path: string) =>
+	fetch(new URL(path, import.meta.env.VITE_BACKEND_API)).then((res) => res.json());
+
 function BestSeller({ category }: { category: string }) {
 	const { chosenLibs: selectedLibs } = useLibStore();
-	const libCodes = selectedLibs.map((v) => v.libCode).join(",");
+	const libCodes = selectedLibs
+		.filter((l) => l.isBestSeller)
+		.map((l) => l.libCode)
+		.join(",");
 	const { data, error, isLoading } = useSWR<BestSellers>(
 		`/book/bestseller/${category}?libCode=${libCodes}`,
 		fetcher
@@ -189,9 +258,21 @@ function BookCard({ result, selectedLibs }: { result: Item; selectedLibs: LibInf
 						{result.publisher} | {result.pubDate.split("-")[0]}
 					</Text>
 
-					<Flex  alignItems={"center"} mt={1}>
-						<Box borderWidth={1} rounded={"xl"} spaceX={0.5} display={"inline-flex"} pe={2}>
-							<Image src="/aladin.png" rounded="full" m={0.5} w={4} aspectRatio={"square"} />
+					<Flex alignItems={"center"} mt={1}>
+						<Box
+							borderWidth={1}
+							rounded={"xl"}
+							spaceX={0.5}
+							display={"inline-flex"}
+							pe={2}
+						>
+							<Image
+								src="/aladin.png"
+								rounded="full"
+								m={0.5}
+								w={4}
+								aspectRatio={"square"}
+							/>
 							<Text>{`알라딘 #${result.bestRank}위`}</Text>
 						</Box>
 					</Flex>
