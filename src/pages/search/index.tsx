@@ -32,8 +32,6 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { SubTitle } from "@/components/text";
 import { HiLibrary } from "react-icons/hi";
 
-
-
 type SearchResult = {
 	isbn: string;
 	title: string;
@@ -281,9 +279,9 @@ function FilterBox() {
 						borderRadius={"full"}
 					>
 						<Icon size={"sm"}>
-						<HiLibrary />
+							<HiLibrary />
 						</Icon>
-						 {chosenLibs[chosenLibs.length - 1].libName}{" "}
+						{chosenLibs[chosenLibs.length - 1].libName}{" "}
 						{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개`}
 						<Icon size={"md"} color={"gray"}>
 							<MdOutlineArrowDropDown />
