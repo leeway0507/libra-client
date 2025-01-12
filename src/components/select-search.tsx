@@ -1,27 +1,12 @@
-import useGeoStore from "@/hooks/store/geo-location";
-import useLibStore from "@/hooks/store/lib";
+import useLibStore, { LibInfo } from "@/hooks/store/lib";
 import { Button, Flex, Icon, Text } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useState } from "react";
 import { IoMdLocate } from "react-icons/io";
-import Select, { components, OptionProps } from "react-select";
+import Select, { ActionMeta, components, OptionProps } from "react-select";
 
 export type SelectProps = {
 	value: string;
 	label: string;
-};
-
-export type LibInfo = {
-	libCode: string;
-	libName: string;
-	address: string;
-	tel: string;
-	latitude: number;
-	longitude: number;
-	homepage: string;
-	closed: string;
-	operatingTime: string;
-	district: string;
-	distance: number;
 };
 
 const Option = (props: OptionProps<LibInfo>) => {
@@ -39,21 +24,49 @@ const Option = (props: OptionProps<LibInfo>) => {
 	);
 };
 
-export default function SelectSearch() {
-	const { requestLocation, userLocation } = useGeoStore();
-	const { optionLibs, changechosenLibs, chosenLibs, updateDistance } = useLibStore();
+type UserLocation = {
+	userLocation: {
+		latitude: number;
+		longitude: number;
+	};
+	error: string;
+};
 
-	useEffect(() => {
-		if (userLocation.latitude !== 0 && userLocation.latitude !== 0) {
-			updateDistance(userLocation);
+export default function SelectSearch() {
+	const { optionLibs, addLib, removeLib, chosenLibs, updateDistance } = useLibStore();
+	const [location, setLocation] = useState<UserLocation>({
+		userLocation: {
+			latitude: 0,
+			longitude: 0,
+		},
+		error: "",
+	});
+
+	const handleRequestLocation = () => {
+		requestLocation(setLocation);
+
+		if (location.error != "") {
+			console.error(location.error);
+			return;
 		}
-	}, [userLocation]);
+
+		if (location.userLocation.latitude !== 0 && location.userLocation.latitude !== 0) {
+			updateDistance(location.userLocation);
+		}
+	};
+	const handleChange = (actionMeta: ActionMeta<LibInfo>) => {
+		if (actionMeta.action === "select-option") {
+			addLib(actionMeta.option!);
+		} else if (actionMeta.action === "remove-value") {
+			removeLib(actionMeta.removedValue.libCode);
+		}
+	};
 	return (
 		<Flex gapX={1}>
 			<Flex flexGrow={1}>
 				<Select
 					value={chosenLibs}
-					onChange={(valArr) => changechosenLibs(valArr.map((v) => v))}
+					onChange={(_, actionMeta) => handleChange(actionMeta)}
 					options={optionLibs}
 					getOptionValue={(option) => option.libCode}
 					getOptionLabel={(option) => `${option.district} ${option.libName}`}
@@ -104,7 +117,12 @@ export default function SelectSearch() {
 					}}
 				/>
 			</Flex>
-			<Button variant="outline" size={"sm"} onClick={requestLocation} bgColor={"gray.100"}>
+			<Button
+				variant="outline"
+				size={"sm"}
+				onClick={handleRequestLocation}
+				bgColor={"gray.100"}
+			>
 				<Icon>
 					<IoMdLocate />
 				</Icon>
@@ -112,3 +130,32 @@ export default function SelectSearch() {
 		</Flex>
 	);
 }
+
+const requestLocation = (setLocation: (u: UserLocation) => void) => {
+	if (!navigator.geolocation) {
+		setLocation({
+			userLocation: { latitude: 0, longitude: 0 },
+			error: "Geolocation is not supported by your browser",
+		});
+	}
+	navigator.geolocation.getCurrentPosition(
+		(position) => {
+			setLocation({
+				userLocation: {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude,
+				},
+				error: "",
+			});
+		},
+		(err) => {
+			setLocation({
+				userLocation: {
+					latitude: 0,
+					longitude: 0,
+				},
+				error: err.message,
+			});
+		}
+	);
+};
