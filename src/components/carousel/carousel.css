@@ -42,9 +42,8 @@
 	justify-content: center; /* 가운데 정렬 */
 	align-items: center; /* 수직 정렬 */
 	gap: 1.2rem;
-	margin-top: 0.7rem;
 	width: 100%; /* 부모 컨테이너의 전체 너비를 사용 */
-	min-height: 0.5rem;
+	min-height: 2rem;
 }
 
 .embla__dots {
