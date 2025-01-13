@@ -88,13 +88,14 @@ function OptionItem({
 			alignItems={"center"}
 			_hover={{ bg: "gray.200" }}
 			height={"10"}
-			fontSize={"md"}
+			fontSize={"sm"}
 		>
 			<Flex spaceX={2}>
 				<Text>{label}</Text>
 				{distance !== 0 && <Text color={"GrayText"}>{distance}km</Text>}
 			</Flex>
 			<Switch
+			fontSize={"sm"}
 				checked={checked}
 				onCheckedChange={handleCheck}
 				disabled={!handleCheck}

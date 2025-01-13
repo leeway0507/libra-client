@@ -271,19 +271,19 @@ function FilterBox() {
 						px={2.5}
 						py={1}
 						gapX={1}
-						fontWeight={600}
-						fontSize={"xs"}
+						fontWeight={500}
+						fontSize={"sm"}
 						color={"GrayText"}
 						cursor={"button"}
 						borderWidth={1}
 						borderRadius={"full"}
 					>
-						<Icon size={"sm"}>
+						<Icon size={"md"}>
 							<HiLibrary />
 						</Icon>
 						{chosenLibs[chosenLibs.length - 1].libName}{" "}
 						{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개`}
-						<Icon size={"md"} color={"gray"}>
+						<Icon size={"lg"} color={"gray"}>
 							<MdOutlineArrowDropDown />
 						</Icon>
 					</Flex>
