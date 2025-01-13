@@ -1,6 +1,5 @@
 import useLibStore, { LibInfo } from "@/hooks/store/lib";
 import { Button, Flex, Icon, Text } from "@chakra-ui/react";
-import { useState } from "react";
 import { IoMdLocate } from "react-icons/io";
 import Select, { ActionMeta, components, OptionProps } from "react-select";
 
@@ -25,34 +24,17 @@ const Option = (props: OptionProps<LibInfo>) => {
 };
 
 type UserLocation = {
-	userLocation: {
+	
 		latitude: number;
 		longitude: number;
-	};
-	error: string;
+	
 };
 
 export default function SelectSearch() {
 	const { optionLibs, addLib, removeLib, chosenLibs, updateDistance } = useLibStore();
-	const [location, setLocation] = useState<UserLocation>({
-		userLocation: {
-			latitude: 0,
-			longitude: 0,
-		},
-		error: "",
-	});
 
 	const handleRequestLocation = () => {
-		requestLocation(setLocation);
-
-		if (location.error != "") {
-			console.error(location.error);
-			return;
-		}
-
-		if (location.userLocation.latitude !== 0 && location.userLocation.latitude !== 0) {
-			updateDistance(location.userLocation);
-		}
+		requestLocation(updateDistance)
 	};
 	const handleChange = (actionMeta: ActionMeta<LibInfo>) => {
 		if (actionMeta.action === "select-option") {
@@ -75,7 +57,7 @@ export default function SelectSearch() {
 					backspaceRemovesValue={false}
 					controlShouldRenderValue={false}
 					components={{ Option: Option }}
-					placeholder={"도서관 검색"}
+					placeholder={"도서관 찾기"}
 					noOptionsMessage={() => "검색 결과가 없습니다."}
 					styles={{
 						container: (base) => ({
@@ -131,31 +113,21 @@ export default function SelectSearch() {
 	);
 }
 
-const requestLocation = (setLocation: (u: UserLocation) => void) => {
+const requestLocation = (calcDistance: (u: UserLocation) => void) => {
 	if (!navigator.geolocation) {
-		setLocation({
-			userLocation: { latitude: 0, longitude: 0 },
-			error: "Geolocation is not supported by your browser",
-		});
-	}
+		console.error("Geolocation is not supported by your browser")
+		};
+	
 	navigator.geolocation.getCurrentPosition(
 		(position) => {
-			setLocation({
-				userLocation: {
+			calcDistance({
 					latitude: position.coords.latitude,
 					longitude: position.coords.longitude,
-				},
-				error: "",
-			});
+				}
+			);
 		},
 		(err) => {
-			setLocation({
-				userLocation: {
-					latitude: 0,
-					longitude: 0,
-				},
-				error: err.message,
-			});
+			console.error(err)
 		}
 	);
 };
