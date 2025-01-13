@@ -1,4 +1,4 @@
-import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image, Link as ChakraLink, Button } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image, Link as ChakraLink } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
