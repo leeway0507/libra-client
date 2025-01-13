@@ -1,17 +1,17 @@
-import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image } from "@chakra-ui/react";
+import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image, Link as ChakraLink } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import useLibStore from "@/hooks/store/lib";
 import { IoIosArrowDropdownCircle, IoIosAddCircleOutline } from "react-icons/io";
 import { LibInfo } from "./library";
 import { SkeletonText } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import EmblaCarousel, { EmblaCarouselItem } from "@/components/carousel";
-import { EmblaOptionsType } from "embla-carousel";
 import { district } from "./library/district";
 import { BestSellerSelectDrawer } from "@/components/bestseller-select-drawer";
+import SearchBarMock from "@/components/search-bar-mock";
 
 type Item = {
 	title: string;
@@ -39,6 +39,7 @@ type BestSellers = {
 export default function Page() {
 	return (
 		<>
+		<SearchBarMock />
 			<MainBox />
 			<NavBar />
 		</>
@@ -54,6 +55,10 @@ function MainBox() {
 		}
 		const activedLibs = chosenLibs.filter((lib) => lib.isBestSeller);
 
+		if (activedLibs.length === 0){
+			return "도서관을 선택하세요"
+		}
+
 		const allInclude = activedLibs.length === chosenLibs.length;
 		if (allInclude) {
 			return "도서관 전체";
@@ -63,20 +68,19 @@ function MainBox() {
 			(activedLibs.length - 1 > 0 ? ` 외 ${activedLibs.length - 1}개 도서관` : "")
 		);
 	};
-	const libOptions: EmblaOptionsType = { dragFree: true, containScroll: "trimSnaps" };
 
 	return (
 		<>
-			<Box my={5} mx={1}>
-				<Text fontWeight={600} fontSize={"xl"} pb={3}>
+			<Box my={4} mx={2}>
+				<Text fontWeight={600} fontSize={"lg"} pb={3}>
 					내 도서관
 				</Text>
-				<EmblaCarousel options={libOptions}>
+				<EmblaCarousel >
 					<LibraryCards />
 				</EmblaCarousel>
 			</Box>
 			<Flex spaceX={1.5} mx={2} py={3} alignItems={"end"}>
-				<Text fontWeight={600} fontSize={"xl"}>
+				<Text fontWeight={600} fontSize={"lg"}>
 					베스트 셀러
 				</Text>
 				<BestSellerSelectDrawer
@@ -158,15 +162,17 @@ function TabArr() {
 		{ korName: "경제경영", engName: "business" },
 		{ korName: "자기계발", engName: "selfdev" },
 	];
+	const location = useLocation()
+	const tabValue = location.hash.replace("#","") || "all"
 	return (
 		<Tabs.Root
 			lazyMount
 			unmountOnExit
-			defaultValue="all"
 			variant={"subtle"}
 			display={"flex"}
 			flexDirection={"column"}
 			flexGrow={1}
+			value={tabValue}
 		>
 			<Tabs.List
 				overflowX={"scroll"}
@@ -188,8 +194,11 @@ function TabArr() {
 						fontSize={"xs"}
 						_selected={{ bg: "gray.200", color: "black", fontWeight: 700 }}
 						fontWeight={600}
+						asChild
 					>
+						<ChakraLink unstyled href={`#${v.engName}`}>
 						{v.korName}
+						</ChakraLink>
 					</Tabs.Trigger>
 				))}
 			</Tabs.List>
