@@ -20,9 +20,6 @@ const system = createSystem(defaultConfig, {
 				GrayText: { value: "#6b7280" },
 				black: { value: "#1F2937" },
 			},
-			fontSizes: {
-				sm: { value: "14px" },
-			},
 		},
 	},
 });

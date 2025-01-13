@@ -86,7 +86,7 @@ export default function Page() {
 				<Flex direction="column" mx={2} flexGrow={1} spaceY={4}>
 					{data.description && <Content title="책소개" text={data.description} />}
 					{data.toc && <Content title="목차" text={data.toc} />}
-					<Box spaceY={2}>
+					<Box spaceY={2} my={2}>
 						<Flex justifyContent={"space-between"} alignItems={"center"}>
 							<SubTitle>대여정보</SubTitle>
 						</Flex>
@@ -258,14 +258,14 @@ function BorrowStatusTable({ libBooks }: { libBooks: LibBook[] }) {
 			</Table.Header>
 			<Table.Body fontSize={"xs"}>
 				{libBooks.map((libBook) => (
-					<Row defaultItem={libBook} key={libBook.libCode} />
+					<TableRow defaultItem={libBook} key={libBook.libCode} />
 				))}
 			</Table.Body>
 		</Table.Root>
 	);
 }
 
-function Row({ defaultItem }: { defaultItem: LibBook }) {
+function TableRow({ defaultItem }: { defaultItem: LibBook }) {
 	const { optionLibs } = useLibStore();
 	const { isbn } = useParams();
 	const {

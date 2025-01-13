@@ -31,7 +31,7 @@ export const BestSellerSelectDrawer = ({ buttonComp }: { buttonComp: React.React
 					<DialogCloseTrigger />
 				</DialogHeader>
 				<DialogBody>
-					<Box height={"96"}>
+					<Box height={"64"}>
 						{chosenLibs.length === 1 ? (
 							<OptionItem
 								key={chosenLibs[0].libCode}
@@ -61,7 +61,7 @@ export const BestSellerSelectDrawer = ({ buttonComp }: { buttonComp: React.React
 								color={"GrayText"}
 								textDecoration={"underline"}
 							>
-								하나 이상 도서관을 활성화 하세요.
+								하나 이상의 도서관을 선택하세요.
 							</Text>
 						)}
 					</Box>
@@ -89,6 +89,7 @@ function OptionItem({
 			_hover={{ bg: "gray.200" }}
 			px={2}
 			height={"10"}
+			fontSize={"md"}
 		>
 			<Flex spaceX={2}>
 				<Text>{label}</Text>
@@ -96,7 +97,6 @@ function OptionItem({
 			</Flex>
 			<Switch
 				checked={checked}
-				size={"sm"}
 				onCheckedChange={handleCheck}
 				disabled={!handleCheck}
 			/>
