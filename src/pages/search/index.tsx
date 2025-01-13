@@ -60,7 +60,6 @@ function SearchBar() {
 	const { handleRedirect, removeUrl, searchParams } = useBookSearch();
 	const [search, setSearch] = useState<string>("");
 	const navigate = useNavigate();
-
 	const goBack = () => {
 		navigate(-1);
 	};
@@ -262,13 +261,13 @@ const showMaxString = (str: string) => {
 function FilterBox() {
 	const { chosenLibs } = useLibStore();
 	return (
-		<Flex gapX={2} alignItems={"center"} p={2} mb={2}>
+		<Flex alignItems={"center"} p={2} mb={2}>
 			<BookSelectDrawer
 				buttonComp={
 					<Flex
 						display={"inline-flex"}
 						alignItems={"center"}
-						px={2.5}
+						px={2}
 						py={1}
 						gapX={1}
 						fontWeight={500}
@@ -278,12 +277,12 @@ function FilterBox() {
 						borderWidth={1}
 						borderRadius={"full"}
 					>
-						<Icon size={"md"}>
+						<Icon size={"sm"}>
 							<HiLibrary />
 						</Icon>
 						{chosenLibs[chosenLibs.length - 1].libName}{" "}
 						{chosenLibs.length > 1 && ` 외 ${chosenLibs.length - 1}개`}
-						<Icon size={"lg"} color={"gray"}>
+						<Icon color={"gray"}>
 							<MdOutlineArrowDropDown />
 						</Icon>
 					</Flex>

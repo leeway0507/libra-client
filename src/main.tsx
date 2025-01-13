@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "./pages/404";
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 import "@fontsource/noto-sans/index.css";
+import ErrorPage  from "./pages/error";
 
 const system = createSystem(defaultConfig, {
 	theme: {
@@ -76,6 +77,7 @@ const RouterLayout = () => (
 const router = createBrowserRouter([
 	{
 		element: <RouterLayout />,
+		errorElement: <ErrorPage />,
 		children: [
 			...routes,
 			{
