@@ -50,10 +50,10 @@ function MainBox() {
 	const { chosenLibs } = useLibStore();
 
 	const getLibraryLabel = () => {
-		if (chosenLibs.length === 1) {
-			return chosenLibs[0].libName;
-		}
 		const activedLibs = chosenLibs.filter((lib) => lib.isBestSeller);
+		if (activedLibs.length === 1) {
+			return activedLibs[0].libName;
+		}
 
 		if (activedLibs.length === 0){
 			return "도서관을 선택하세요"
@@ -152,15 +152,15 @@ function LibraryCards() {
 
 function TabArr() {
 	const tabs = [
-		{ korName: "일반", engName: "all" },
+		{ korName: "전체", engName: "all" },
 		{ korName: "컴퓨터/모바일", engName: "dev" },
-		{ korName: "여행", engName: "travel" },
-		{ korName: "건강/취미", engName: "health" },
 		{ korName: "인문학", engName: "humanity" },
-		{ korName: "소설/시/희곡", engName: "novel" },
 		{ korName: "역사", engName: "history" },
-		{ korName: "경제경영", engName: "business" },
+		{ korName: "경제/경영", engName: "business" },
+		{ korName: "여행", engName: "travel" },
 		{ korName: "자기계발", engName: "selfdev" },
+		{ korName: "소설/시/희곡", engName: "novel" },
+		{ korName: "건강/취미", engName: "health" },
 	];
 	const location = useLocation()
 	const tabValue = location.hash.replace("#","") || "all"

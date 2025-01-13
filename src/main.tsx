@@ -66,7 +66,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 	);
 }
 
-const AppLayout = () => (
+const RouterLayout = () => (
 	<>
 		<ScrollRestoration />
 		<Outlet />
@@ -75,7 +75,7 @@ const AppLayout = () => (
 
 const router = createBrowserRouter([
 	{
-		element: <AppLayout />,
+		element: <RouterLayout />,
 		children: [
 			...routes,
 			{

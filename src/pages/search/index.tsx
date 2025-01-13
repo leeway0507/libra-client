@@ -94,7 +94,7 @@ function SearchBar() {
 				px={0}
 				onClick={goBack}
 			>
-				<Icon mx={"auto"} size={"lg"} color={"GrayText"}>
+				<Icon mx={"auto"} size={"md"} color={"GrayText"}>
 					<IoIosArrowBack />
 				</Icon>
 			</Button>
@@ -104,10 +104,11 @@ function SearchBar() {
 				onChange={(e) => setSearch(e.target.value)}
 				variant="flushed"
 				placeholder={placeholder}
-				_placeholder={{ color: "black" }}
+				_placeholder={{ color: "black"}}
 				_focus={{ borderColor: "gray.200" }}
 				px={10}
 				fontSize={"md"}
+				height={10}
 				autoFocus
 			/>
 			{search.length > 0 ? (
@@ -135,7 +136,6 @@ const fetcher = async (url: string) => {
 	const res = await fetch(url);
 	if (!res.ok) {
 		const error = new FetchError("An error occurred while fetching the data.");
-		// Attach extra info to the error object.
 		error.info = res.json();
 		error.status = res.status;
 		throw error;

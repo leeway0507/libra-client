@@ -87,7 +87,6 @@ function OptionItem({
 			justifyContent={"space-between"}
 			alignItems={"center"}
 			_hover={{ bg: "gray.200" }}
-			px={2}
 			height={"10"}
 			fontSize={"md"}
 		>

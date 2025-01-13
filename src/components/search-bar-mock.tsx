@@ -8,8 +8,8 @@ export default function SearchBarMock() {
 			<Flex
 				position={"relative"}
 				px={0}
-				my={1}
-				height={"10"}
+				my={0.5}
+				height={10}
 				color={"GrayText"}
 				borderBottomWidth={1}
 			>
