@@ -47,6 +47,7 @@ export default function SelectSearch() {
 		<Flex gapX={1}>
 			<Flex flexGrow={1}>
 				<Select
+					isDisabled={chosenLibs.length === parseInt(import.meta.env.VITE_MAX_LIBRARY_COUNT)}
 					value={chosenLibs}
 					onChange={(_, actionMeta) => handleChange(actionMeta)}
 					options={optionLibs}
