@@ -103,7 +103,7 @@ function SearchBar() {
 				onChange={(e) => setSearch(e.target.value)}
 				variant="flushed"
 				placeholder={placeholder}
-				_placeholder={{ color: "black"}}
+				_placeholder={{ color: "black" }}
 				_focus={{ borderColor: "gray.200" }}
 				px={10}
 				fontSize={"md"}

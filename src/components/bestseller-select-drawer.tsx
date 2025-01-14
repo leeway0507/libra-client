@@ -95,7 +95,7 @@ function OptionItem({
 				{distance !== 0 && <Text color={"GrayText"}>{distance}km</Text>}
 			</Flex>
 			<Switch
-			fontSize={"sm"}
+				fontSize={"sm"}
 				checked={checked}
 				onCheckedChange={handleCheck}
 				disabled={!handleCheck}

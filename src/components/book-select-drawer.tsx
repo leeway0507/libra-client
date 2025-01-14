@@ -31,8 +31,10 @@ export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }
 				<DialogBody>
 					<Box height={"96"}>
 						{chosenLibs !== undefined && <SelectSearch />}
-						<Box px={1} py={2} fontWeight={600}>도서관 목록 {chosenLibs.length}/{import.meta.env.VITE_MAX_LIBRARY_COUNT}</Box>
-						<Box >
+						<Box px={1} py={2} fontWeight={600}>
+							도서관 목록 {chosenLibs.length}/{import.meta.env.VITE_MAX_LIBRARY_COUNT}
+						</Box>
+						<Box>
 							{chosenLibs.length === 1 ? (
 								<>
 									<OptionItem

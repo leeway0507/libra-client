@@ -1,4 +1,15 @@
-import { Box, Flex, Span, Tabs, Text, Icon, Skeleton, Center, Image, Link as ChakraLink } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	Span,
+	Tabs,
+	Text,
+	Icon,
+	Skeleton,
+	Center,
+	Image,
+	Link as ChakraLink,
+} from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
 import useSWR from "swr";
 import BookImage from "@/components/book-image";
@@ -39,7 +50,7 @@ type BestSellers = {
 export default function Page() {
 	return (
 		<>
-		<SearchBarMock />
+			<SearchBarMock />
 			<MainBox />
 			<NavBar />
 		</>
@@ -55,8 +66,8 @@ function MainBox() {
 			return activedLibs[0].libName;
 		}
 
-		if (activedLibs.length === 0){
-			return "도서관을 선택하세요"
+		if (activedLibs.length === 0) {
+			return "도서관을 선택하세요";
 		}
 
 		const allInclude = activedLibs.length === chosenLibs.length;
@@ -69,14 +80,13 @@ function MainBox() {
 		);
 	};
 
-
 	return (
 		<>
 			<Box my={4} mx={2}>
 				<Text fontWeight={600} fontSize={"lg"} pb={3}>
 					내 도서관
 				</Text>
-				<EmblaCarousel >
+				<EmblaCarousel>
 					<LibraryCards />
 				</EmblaCarousel>
 			</Box>
@@ -163,8 +173,8 @@ function TabArr() {
 		{ korName: "소설/시/희곡", engName: "novel" },
 		{ korName: "건강/취미", engName: "health" },
 	];
-	const location = useLocation()
-	const tabValue = location.hash.replace("#","") || "all"
+	const location = useLocation();
+	const tabValue = location.hash.replace("#", "") || "all";
 	return (
 		<Tabs.Root
 			lazyMount
@@ -198,7 +208,7 @@ function TabArr() {
 						asChild
 					>
 						<ChakraLink unstyled href={`#${v.engName}`}>
-						{v.korName}
+							{v.korName}
 						</ChakraLink>
 					</Tabs.Trigger>
 				))}

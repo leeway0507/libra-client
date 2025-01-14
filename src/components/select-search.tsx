@@ -24,17 +24,15 @@ const Option = (props: OptionProps<LibInfo>) => {
 };
 
 type UserLocation = {
-	
-		latitude: number;
-		longitude: number;
-	
+	latitude: number;
+	longitude: number;
 };
 
 export default function SelectSearch() {
 	const { optionLibs, addLib, removeLib, chosenLibs, updateDistance } = useLibStore();
 
 	const handleRequestLocation = () => {
-		requestLocation(updateDistance)
+		requestLocation(updateDistance);
 	};
 	const handleChange = (actionMeta: ActionMeta<LibInfo>) => {
 		if (actionMeta.action === "select-option") {
@@ -47,7 +45,9 @@ export default function SelectSearch() {
 		<Flex gapX={1}>
 			<Flex flexGrow={1}>
 				<Select
-					isDisabled={chosenLibs.length === parseInt(import.meta.env.VITE_MAX_LIBRARY_COUNT)}
+					isDisabled={
+						chosenLibs.length === parseInt(import.meta.env.VITE_MAX_LIBRARY_COUNT)
+					}
 					value={chosenLibs}
 					onChange={(_, actionMeta) => handleChange(actionMeta)}
 					options={optionLibs}
@@ -116,19 +116,18 @@ export default function SelectSearch() {
 
 const requestLocation = (calcDistance: (u: UserLocation) => void) => {
 	if (!navigator.geolocation) {
-		console.error("Geolocation is not supported by your browser")
-		};
-	
+		console.error("Geolocation is not supported by your browser");
+	}
+
 	navigator.geolocation.getCurrentPosition(
 		(position) => {
 			calcDistance({
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude,
-				}
-			);
+				latitude: position.coords.latitude,
+				longitude: position.coords.longitude,
+			});
 		},
 		(err) => {
-			console.error(err)
+			console.error(err);
 		}
 	);
 };
