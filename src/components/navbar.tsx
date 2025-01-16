@@ -8,7 +8,14 @@ import { Link } from "react-router";
 
 export default function NavBar() {
 	return (
-		<Box position="fixed" bottom={0} bgColor={"background"} py={3} w={"100%"} maxW={"md"}>
+		<Box
+			position="fixed"
+			bottom={{ smDown: 0, sm: 7 }}
+			bgColor={"gray.50"}
+			py={3}
+			w={"100%"}
+			maxW={"sm"}
+		>
 			<Flex gapX={2}>
 				<Item name="홈" to={"/"} icon={<IoMdHome />} />
 				<Item name="북마크" to={"/bookmark"} icon={<IoMdBookmarks />} />
@@ -28,7 +35,7 @@ function Item({ to, name, icon }: { to: string; name: string; icon: React.ReactN
 			gap={0}
 			w={"100%"}
 			focusRing={"none"}
-			color={"GrayText"}
+			opacity={0.8}
 			_hover={{
 				textDecoration: "none",
 			}}

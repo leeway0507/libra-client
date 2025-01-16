@@ -1,14 +1,17 @@
 import { Global, css } from "@emotion/react";
-import { StrictMode } from "react";
+import { lazy, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from "react-router";
 import routes from "~react-pages";
-import { ChakraProvider, Flex, Container } from "@chakra-ui/react";
+import { ChakraProvider, Flex, Container, Box } from "@chakra-ui/react";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "./pages/404";
+
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 import "@fontsource/noto-sans/index.css";
-import ErrorPage from "./pages/error";
+
+
+const NotFound = lazy(() => import("./pages/404"));
+const ErrorPage = lazy(() => import("./pages/error"));
 
 const system = createSystem(defaultConfig, {
 	theme: {
@@ -20,6 +23,7 @@ const system = createSystem(defaultConfig, {
 			colors: {
 				GrayText: { value: "#6b7280" },
 				black: { value: "#1F2937" },
+				emptyBackground: { value: "#d4d4d8" },
 			},
 		},
 	},
@@ -47,21 +51,41 @@ function Layout({ children }: { children: React.ReactNode }) {
 			minHeight="100%"
 			display="flex"
 			justifyContent="center"
-			background="gray.200"
+			background="emptyBackground"
 			px={0}
 		>
-			<Container maxW="md" p={0}>
-				<Flex
-					maxW={"md"}
-					position={"relative"}
-					minHeight={"100dvh"}
-					direction={"column"}
-					bgColor={"background"}
-				>
+			<Box
+				display={{ smDown: "none" }}
+				position={"fixed"}
+				w={"100%"}
+				top={0}
+				maxW={"sm"}
+				h={10}
+				zIndex={10}
+				background="emptyBackground"
+			>
+				<Box h={3} />
+				<Box bgColor={"background"} h={7} roundedTop={"4xl"} />
+			</Box>
+			<Container maxW="sm" px={0} mt={{ sm: 10 }} bgColor={"Background"}>
+				<Flex position={"relative"} direction={"column"}>
 					{children}
 					<Flex height="75px" />
 				</Flex>
 			</Container>
+			<Box
+				display={{ smDown: "none" }}
+				position={"fixed"}
+				w={"100%"}
+				bottom={0}
+				maxW={"sm"}
+				h={10}
+				zIndex={10}
+				background="emptyBackground"
+			>
+				<Box bgColor={"gray.50"} h={7} roundedBottom={"4xl"} />
+				<Box h={3} />
+			</Box>
 			<Toaster />
 		</Container>
 	);

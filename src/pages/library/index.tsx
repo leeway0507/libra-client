@@ -58,7 +58,7 @@ function MainBox() {
 	const { chosenLibs, removeLib } = useLibStore();
 
 	return (
-		<Box bgColor={"Background"} flexGrow={1} width={"100%"} px={1} py={2}>
+		<Box bgColor={"Background"} flexGrow={1} width={"100%"} px={3} py={2}>
 			<SelectSearch />
 			<Box my={4}>
 				<Text fontSize={"md"} fontWeight={600}>
