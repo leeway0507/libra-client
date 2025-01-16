@@ -31,6 +31,7 @@ import BookImage from "@/components/book-image";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { SubTitle } from "@/components/text";
 import { HiLibrary } from "react-icons/hi";
+import { useBookSearch } from "./use-book-search";
 
 type SearchResult = {
 	isbn: string;
@@ -60,6 +61,7 @@ function SearchBar() {
 	const { handleRedirect, removeUrl, searchParams } = useBookSearch();
 	const [search, setSearch] = useState<string>("");
 	const navigate = useNavigate();
+	
 	const goBack = () => {
 		navigate(-1);
 	};
@@ -81,6 +83,10 @@ function SearchBar() {
 		removeUrl();
 	};
 	const keyword = searchParams.get("q");
+
+	const showMaxString = (str: string) => {
+		return str.length > 10 ? str.slice(0, 10) + "..." : str;
+	};
 	const placeholder = keyword ? `${showMaxString(keyword)}에 대한 검색 결과` : "검색하기";
 
 	return (
@@ -211,21 +217,7 @@ const Loading = () => {
 	);
 };
 
-const useBookSearch = () => {
-	const [searchParams] = useSearchParams();
-	const navigate = useNavigate();
-	const { chosenLibs } = useLibStore();
-	const url = new URL(window.location.href);
-	const handleRedirect = (keyword: string) => {
-		url.searchParams.set("q", keyword);
-		url.searchParams.set("libCode", chosenLibs.map((v) => v.libCode).join());
-		navigate(url.search, { replace: true });
-	};
-	const removeUrl = () => {
-		navigate("", { replace: true });
-	};
-	return { handleRedirect, removeUrl, searchParams };
-};
+
 
 function RecentKeyword() {
 	const { RecentKeywords, removeKeyword } = useRecentSearchKeywordStore();
@@ -254,9 +246,6 @@ function RecentKeyword() {
 	);
 }
 
-const showMaxString = (str: string) => {
-	return str.length > 10 ? str.slice(0, 10) + "..." : str;
-};
 
 function FilterBox() {
 	const { chosenLibs } = useLibStore();

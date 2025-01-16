@@ -1,6 +1,6 @@
 import { Box, Flex, Text, Image, Button, Grid, GridItem } from "@chakra-ui/react";
 import NavBar from "@/components/navbar";
-import useLibStore from "@/hooks/store/lib";
+import useLibStore, { type LibInfo } from "@/hooks/store/lib";
 import { Tag } from "@/components/ui/tag";
 import { CiClock2 } from "react-icons/ci";
 import { CloseButton } from "@/components/ui/close-button";
@@ -15,35 +15,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-
 import SelectSearch from "@/components/select-search";
 import { district } from "./district";
-
-export type LibInfo = {
-	libCode: string;
-	libName: string;
-	address: string;
-	tel: string;
-	latitude: number;
-	longitude: number;
-	homepage: string;
-	closed: string;
-	operatingTime: string;
-	district: string;
-	distance: number;
-};
-
-export type SelectProps = {
-	value: string;
-	label: string;
-};
-
-export interface SelectFilterProps {
-	availableOptions: LibInfo[];
-	selectedOptions: LibInfo[];
-	setSelectedOptions: (s: LibInfo[]) => void;
-	placeHolder?: string;
-}
 
 export default function Page() {
 	return (

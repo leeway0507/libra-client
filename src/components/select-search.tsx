@@ -1,12 +1,7 @@
-import useLibStore, { LibInfo } from "@/hooks/store/lib";
+import useLibStore, { type LibInfo, type LibLocation } from "@/hooks/store/lib";
 import { Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { IoMdLocate } from "react-icons/io";
 import Select, { ActionMeta, components, OptionProps } from "react-select";
-
-export type SelectProps = {
-	value: string;
-	label: string;
-};
 
 const Option = (props: OptionProps<LibInfo>) => {
 	const { data } = props;
@@ -21,11 +16,6 @@ const Option = (props: OptionProps<LibInfo>) => {
 			</Flex>
 		</components.Option>
 	);
-};
-
-type UserLocation = {
-	latitude: number;
-	longitude: number;
 };
 
 export default function SelectSearch() {
@@ -114,7 +104,7 @@ export default function SelectSearch() {
 	);
 }
 
-const requestLocation = (calcDistance: (u: UserLocation) => void) => {
+const requestLocation = (calcDistance: (u: LibLocation) => void) => {
 	if (!navigator.geolocation) {
 		console.error("Geolocation is not supported by your browser");
 	}

@@ -24,13 +24,7 @@ function BookMarkList() {
 	const BookMarkArrComponent = bookMarkList.map((book) => (
 		<BookMarkCard key={book.isbn} bookInfo={book} />
 	));
-	return bookMarkList.length !== 0 ? (
-		<Flex flexGrow={1} mx={5} my={5}>
-			<Flex gapY={5} flexDirection={"column"} w={"100%"}>
-				{BookMarkArrComponent}
-			</Flex>
-		</Flex>
-	) : (
+	return bookMarkList.length === 0 ? (
 		<Center flexGrow={1}>
 			<EmptyState
 				icon={<IoIosBook />}
@@ -38,6 +32,12 @@ function BookMarkList() {
 				description="대여할 도서를 쉽게 관리하세요"
 			/>
 		</Center>
+	) : (
+		<Flex flexGrow={1} mx={5} my={5}>
+			<Flex gapY={5} flexDirection={"column"} w={"100%"}>
+				{BookMarkArrComponent}
+			</Flex>
+		</Flex>
 	);
 }
 

@@ -5,7 +5,6 @@ import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from "
 import routes from "~react-pages";
 import { ChakraProvider, Flex, Container, Box } from "@chakra-ui/react";
 import { Toaster } from "@/components/ui/toaster";
-
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 import "@fontsource/noto-sans/index.css";
 
@@ -68,10 +67,10 @@ function Layout({ children }: { children: React.ReactNode }) {
 				bgColor={"emptyBackground"}
 			>
 				<Box h={3} />
-				<Box bgColor={"background"} h={7} roundedTop={"4xl"} />
+				<Box bgColor={"Background"} h={7} roundedTop={"4xl"} />
 			</Box>
 
-			<Container maxW="sm" px={0} bgColor={"Background"} flexGrow={1} >
+			<Container maxW="sm" px={0} bgColor={"Background"} flexGrow={1}>
 				<Flex position={"relative"} direction={"column"} pb={32}>
 					{children}
 				</Flex>
