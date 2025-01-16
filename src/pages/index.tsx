@@ -84,7 +84,7 @@ function MainBox() {
 		<>
 			<Box my={4} mx={2}>
 				<Text fontWeight={600} fontSize={"lg"} pb={3}>
-					내 도서관
+					자주 방문하는 도서관
 				</Text>
 				<EmblaCarousel>
 					<LibraryCards />

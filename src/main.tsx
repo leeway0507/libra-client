@@ -9,7 +9,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 import "@fontsource/noto-sans/index.css";
 
-
 const NotFound = lazy(() => import("./pages/404"));
 const ErrorPage = lazy(() => import("./pages/error"));
 
@@ -36,8 +35,10 @@ function GlobalStyles() {
 				html,
 				body,
 				#root {
-					height: 100%;
 					margin: 0;
+				}
+				html {
+					background-color: var(--chakra-colors-empty-background);
 				}
 			`}
 		/>
@@ -47,30 +48,32 @@ function GlobalStyles() {
 function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<Container
-			width="100%"
-			minHeight="100%"
+			minHeight="100dvh"
 			display="flex"
+			flexDirection={"column"}
 			justifyContent="center"
-			background="emptyBackground"
+			alignItems={"center"}
 			px={0}
+			position={"relative"}
+			shadow={"2xl"}
 		>
 			<Box
 				display={{ smDown: "none" }}
-				position={"fixed"}
+				position={"sticky"}
 				w={"100%"}
 				top={0}
 				maxW={"sm"}
 				h={10}
 				zIndex={10}
-				background="emptyBackground"
+				bgColor={"emptyBackground"}
 			>
 				<Box h={3} />
 				<Box bgColor={"background"} h={7} roundedTop={"4xl"} />
 			</Box>
-			<Container maxW="sm" px={0} mt={{ sm: 10 }} bgColor={"Background"}>
-				<Flex position={"relative"} direction={"column"}>
+
+			<Container maxW="sm" px={0} bgColor={"Background"} flexGrow={1} >
+				<Flex position={"relative"} direction={"column"} pb={32}>
 					{children}
-					<Flex height="75px" />
 				</Flex>
 			</Container>
 			<Box

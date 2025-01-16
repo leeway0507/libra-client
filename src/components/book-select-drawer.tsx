@@ -16,9 +16,9 @@ export const BookSelectDrawer = ({ buttonComp }: { buttonComp: React.ReactNode }
 	const { chosenLibs, removeLib } = useLibStore();
 
 	return (
-		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"sm"}>
+		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"xs"} >
 			<DialogTrigger asChild>{buttonComp}</DialogTrigger>
-			<DialogContent mb={0}>
+			<DialogContent mb={0} roundedTop={"3xl"}>
 				<DialogHeader
 					position={"relative"}
 					display={"flex"}

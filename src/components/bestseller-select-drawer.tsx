@@ -19,9 +19,9 @@ export const BestSellerSelectDrawer = ({ buttonComp }: { buttonComp: React.React
 		updateLib(lib.libCode, { isBestSeller: !lib.isBestSeller });
 
 	return (
-		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"sm"}>
+		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"xs"}>
 			<DialogTrigger asChild>{buttonComp}</DialogTrigger>
-			<DialogContent mb={0}>
+			<DialogContent mb={0} roundedTop={"3xl"}>
 				<DialogHeader
 					position={"relative"}
 					display={"flex"}
