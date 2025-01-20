@@ -10,7 +10,7 @@ export default function NavBar() {
 	return (
 		<Box
 			position="fixed"
-			bottom={{ smDown: 0, sm: 7 }}
+			bottom={{ base: 0, sm: 7 }}
 			bgColor={"gray.50"}
 			py={3}
 			w={"100%"}

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export const useCheckClamp = () => {
-	const contentRef = useRef<HTMLDivElement>(null);
+	const contentRef = useRef<HTMLDivElement | null>(null);
 	const [isClamped, setIsClamped] = useState(false);
 
 	useEffect(() => {

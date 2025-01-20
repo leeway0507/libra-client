@@ -11,16 +11,17 @@ import {
 	Spinner,
 	VStack,
 	Center,
+	Separator,
 } from "@chakra-ui/react";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosClose } from "react-icons/io";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { BookSelectDrawer } from "@/components/book-select-drawer";
 import useLibStore from "@/hooks/store/lib";
 import NavBar from "@/components/navbar";
-import { useSearchKeywordStore as useRecentSearchKeywordStore } from "@/hooks/store/search";
+import { useSearchKeywordStore as useRecentSearchKeywordStore } from "@/hooks/store/search-keyword";
 import { CloseButton } from "@/components/ui/close-button";
 import { GoHistory } from "react-icons/go";
 import { BiError } from "react-icons/bi";
@@ -44,24 +45,23 @@ type SearchResult = {
 };
 
 export default function Page() {
+	const [openRecentKeyword, setOpenRecentKeyword] = useState(false);
 	return (
 		<>
-			<Box position={"sticky"} top={0} bgColor={"Background"} zIndex={5}>
-				<SearchBar />
-			</Box>
+			<SearchBar setOpen={setOpenRecentKeyword} />
 			<FilterBox />
-			<MainBox />
+			<MainBox open={openRecentKeyword} />
 			<NavBar />
 		</>
 	);
 }
 
-function SearchBar() {
+function SearchBar({ setOpen }: { setOpen: (b: boolean) => void }) {
 	const { addKeyword } = useRecentSearchKeywordStore();
-	const { handleRedirect, removeUrl, searchParams } = useBookSearch();
+	const { handleSearch, initSearch, searchParams } = useBookSearch();
 	const [search, setSearch] = useState<string>("");
 	const navigate = useNavigate();
-	
+
 	const goBack = () => {
 		navigate(-1);
 	};
@@ -72,7 +72,7 @@ function SearchBar() {
 				alert("검색어를 입력해주세요.");
 				return;
 			}
-			handleRedirect(search);
+			handleSearch(search);
 			addKeyword(search);
 			setSearch("");
 			e.currentTarget.blur();
@@ -80,7 +80,7 @@ function SearchBar() {
 	};
 	const handleClose = () => {
 		setSearch("");
-		removeUrl();
+		initSearch();
 	};
 	const keyword = searchParams.get("q");
 
@@ -90,40 +90,47 @@ function SearchBar() {
 	const placeholder = keyword ? `${showMaxString(keyword)}에 대한 검색 결과` : "검색하기";
 
 	return (
-		<Container position={"relative"} px={0} my={0.5}>
-			<Button
-				position={"absolute"}
-				zIndex={1}
-				height={"100%"}
-				variant="plain"
-				px={0}
-				onClick={goBack}
-			>
-				<Icon mx={"auto"} size={"md"} color={"GrayText"}>
-					<IoIosArrowBack />
-				</Icon>
-			</Button>
-			<Input
-				value={search}
-				onKeyUp={handleKeyUp}
-				onChange={(e) => setSearch(e.target.value)}
-				variant="flushed"
-				placeholder={placeholder}
-				_placeholder={{ color: "black" }}
-				_focus={{ borderColor: "gray.200" }}
-				px={10}
-				fontSize={"md"}
-				height={10}
-				autoFocus
-			/>
-			{search.length > 0 ? (
-				<Button position={"absolute"} right={0} variant="plain" onClick={handleClose}>
-					<Icon size={"xl"} color={"GrayText"}>
-						<IoIosClose />
+		<Box position={"sticky"} top={10} bgColor={"Background"} zIndex={5}>
+			<Container position={"relative"} px={0} my={0.5}>
+				<Button
+					position={"absolute"}
+					zIndex={1}
+					height={"100%"}
+					variant="plain"
+					px={0}
+					onClick={goBack}
+				>
+					<Icon mx={"auto"} size={"md"} color={"GrayText"}>
+						<IoIosArrowBack />
 					</Icon>
 				</Button>
-			) : null}
-		</Container>
+				<Input
+					value={search}
+					onKeyUp={handleKeyUp}
+					onFocus={() => setOpen(true)}
+					onBlur={() =>
+						setTimeout(() => {
+							setOpen(false);
+						}, 150)
+					}
+					onChange={(e) => setSearch(e.target.value)}
+					variant="flushed"
+					placeholder={placeholder}
+					_placeholder={{ color: "black" }}
+					_focus={{ borderColor: "gray.200" }}
+					px={10}
+					fontSize={"md"}
+					height={10}
+				/>
+				{search.length > 0 ? (
+					<Button position={"absolute"} right={0} variant="plain" onClick={handleClose}>
+						<Icon size={"xl"} color={"GrayText"}>
+							<IoIosClose />
+						</Icon>
+					</Button>
+				) : null}
+			</Container>
+		</Box>
 	);
 }
 
@@ -145,11 +152,10 @@ const fetcher = async (url: string) => {
 		error.status = res.status;
 		throw error;
 	}
-
 	return res.json();
 };
 
-function MainBox() {
+function MainBox({ open }: { open: boolean }) {
 	const [schParams] = useSearchParams(new URLSearchParams(window.location.search));
 	const keyword = schParams.get("q");
 	const libCode = schParams.get("libCode");
@@ -163,17 +169,29 @@ function MainBox() {
 		(url: string) => fetcher(url)
 	);
 
+	const direct: SearchResult[] = [];
+	const indirect: SearchResult[] = [];
+	data?.forEach((e) => (e.score > 0.5 ? direct.push(e) : indirect.push(e)));
+
 	return (
-		<Flex flexGrow={1} direction={"column"} mx={5} pb={5}>
-			{!keyword || !libCode ? (
+		<Flex flexGrow={1} direction={"column"} mx={5} pb={5} h={"100%"}>
+			{!keyword || !libCode || open ? (
 				<RecentKeyword />
 			) : isLoading ? (
 				<Loading />
 			) : !error && data ? (
 				<>
-					{isLoading && <Loading />}
 					<Grid templateColumns="repeat(2, 1fr)" columnGap={8} rowGap={8}>
-						{data.map((result) => (
+						{direct.map((result) => (
+							<BookCard key={result.isbn} result={result} />
+						))}
+					</Grid>
+					<Separator my={3} />
+					<Text py={5} fontSize={"xl"} fontWeight={600}>
+						기타 추천 도서
+					</Text>
+					<Grid templateColumns="repeat(2, 1fr)" columnGap={8} rowGap={8}>
+						{indirect.map((result) => (
 							<BookCard key={result.isbn} result={result} />
 						))}
 					</Grid>
@@ -217,18 +235,16 @@ const Loading = () => {
 	);
 };
 
-
-
 function RecentKeyword() {
 	const { RecentKeywords, removeKeyword } = useRecentSearchKeywordStore();
-	const { handleRedirect } = useBookSearch();
+	const { handleSearch } = useBookSearch();
 	return (
 		<Box>
 			<SubTitle>최근 검색어</SubTitle>
 			{RecentKeywords.map((keyword) => (
 				<Flex key={keyword.id} _hover={{ bg: "gray.100" }}>
 					<Button
-						onClick={() => handleRedirect(keyword.keyword)}
+						onClick={() => handleSearch(keyword.keyword)}
 						variant="plain"
 						px={0}
 						flexGrow={1}
@@ -246,9 +262,21 @@ function RecentKeyword() {
 	);
 }
 
-
 function FilterBox() {
 	const { chosenLibs } = useLibStore();
+	const [searchParams] = useSearchParams();
+	const { handleSearch } = useBookSearch();
+
+	const prevLibCode = searchParams.get("libCode");
+	const currLibCode = chosenLibs.map((l) => l.libCode).join(",");
+
+	useEffect(() => {
+		if (prevLibCode !== currLibCode!) {
+			const keyword = searchParams.get("q");
+			keyword && handleSearch(keyword);
+		}
+	}, [chosenLibs]);
+
 	return (
 		<Flex alignItems={"center"} p={2} mb={2}>
 			<BookSelectDrawer

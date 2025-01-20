@@ -19,19 +19,19 @@ export const BestSellerSelectDrawer = ({ buttonComp }: { buttonComp: React.React
 		updateLib(lib.libCode, { isBestSeller: !lib.isBestSeller });
 
 	return (
-		<DialogRoot key={"bottom"} placement={"bottom"} motionPreset="slide-in-bottom" size={"xs"}>
+		<DialogRoot key="bottom" placement="bottom" motionPreset="slide-in-bottom" size="xs">
 			<DialogTrigger asChild>{buttonComp}</DialogTrigger>
-			<DialogContent mb={0} roundedTop={"3xl"}>
+			<DialogContent mb={0} roundedTop="3xl">
 				<DialogHeader
-					position={"relative"}
-					display={"flex"}
-					justifyContent={"center"}
-					alignItems={"center"}
+					position="relative"
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
 				>
 					<DialogCloseTrigger />
 				</DialogHeader>
 				<DialogBody>
-					<Box height={"64"}>
+					<Box height="64">
 						{chosenLibs.length === 1 ? (
 							<OptionItem
 								key={chosenLibs[0].libCode}
@@ -57,9 +57,9 @@ export const BestSellerSelectDrawer = ({ buttonComp }: { buttonComp: React.React
 						{isOnlyOneActive && (
 							<Text
 								my={10}
-								textAlign={"center"}
-								color={"GrayText"}
-								textDecoration={"underline"}
+								textAlign="center"
+								color="GrayText"
+								textDecoration="underline"
 							>
 								하나 이상의 도서관을 선택하세요.
 							</Text>
@@ -84,18 +84,18 @@ function OptionItem({
 }) {
 	return (
 		<Flex
-			justifyContent={"space-between"}
-			alignItems={"center"}
+			justifyContent="space-between"
+			alignItems="center"
 			_hover={{ bg: "gray.200" }}
-			height={"10"}
-			fontSize={"sm"}
+			height="10"
+			fontSize="sm"
 		>
 			<Flex spaceX={2}>
 				<Text>{label}</Text>
-				{distance !== 0 && <Text color={"GrayText"}>{distance}km</Text>}
+				{distance !== 0 && <Text color="GrayText">{distance}km</Text>}
 			</Flex>
 			<Switch
-				fontSize={"sm"}
+				fontSize="sm"
 				checked={checked}
 				onCheckedChange={handleCheck}
 				disabled={!handleCheck}

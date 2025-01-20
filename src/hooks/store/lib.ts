@@ -33,7 +33,7 @@ export type LibLocation = {
 	longitude: number;
 };
 
-const defaultLibs = [
+export const defaultLibs = [
 	{
 		libCode: "111314",
 		libName: "서울도서관",

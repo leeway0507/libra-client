@@ -49,43 +49,43 @@ function Layout({ children }: { children: React.ReactNode }) {
 		<Container
 			minHeight="100dvh"
 			display="flex"
-			flexDirection={"column"}
+			flexDirection="column"
 			justifyContent="center"
-			alignItems={"center"}
+			alignItems="center"
 			px={0}
-			position={"relative"}
-			shadow={"2xl"}
+			position="relative"
+			shadow="2xl"
 		>
 			<Box
 				display={{ smDown: "none" }}
-				position={"sticky"}
-				w={"100%"}
+				position="sticky"
+				w="100%"
 				top={0}
-				maxW={"sm"}
+				maxW="sm"
 				h={10}
 				zIndex={10}
-				bgColor={"emptyBackground"}
+				bgColor="emptyBackground"
 			>
 				<Box h={3} />
-				<Box bgColor={"Background"} h={7} roundedTop={"4xl"} />
+				<Box bgColor="Background" h={7} roundedTop="4xl" />
 			</Box>
 
-			<Container maxW="sm" px={0} bgColor={"Background"} flexGrow={1}>
-				<Flex position={"relative"} direction={"column"} pb={32}>
+			<Container maxW="sm" px={0} bgColor="Background" flexGrow={1}>
+				<Flex position="relative" direction="column" pb={32}>
 					{children}
 				</Flex>
 			</Container>
 			<Box
 				display={{ smDown: "none" }}
-				position={"fixed"}
-				w={"100%"}
+				position="fixed"
+				w="100%"
 				bottom={0}
-				maxW={"sm"}
+				maxW="sm"
 				h={10}
 				zIndex={10}
 				background="emptyBackground"
 			>
-				<Box bgColor={"gray.50"} h={7} roundedBottom={"4xl"} />
+				<Box bgColor="gray.50" h={7} roundedBottom="4xl" />
 				<Box h={3} />
 			</Box>
 			<Toaster />

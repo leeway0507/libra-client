@@ -20,7 +20,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import BackButton from "@/components/buttons";
 import { useSearchParams } from "react-router";
 import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
-import { useCheckClamp } from "@/hooks/use-line-count";
+import { useCheckClamp } from "@/hooks/use-check-clamp";
 
 type BookDetailReq = {
 	isbn: string;
@@ -124,19 +124,6 @@ function SearchBarMock({ bookDetail }: { bookDetail?: BookInfo }) {
 		</Flex>
 	);
 }
-function NotFoundPage({ isbn }: { isbn?: string }) {
-	return (
-		<Flex bgColor="white" direction={"column"} h={"100%"}>
-			<SearchBarMock />
-			<Center flexGrow={1}>
-				<EmptyState
-					title={"페이지를 찾을 수 없습니다."}
-					description={isbn && `${isbn}에 대한 결과가 없습니다`}
-				/>
-			</Center>
-		</Flex>
-	);
-}
 
 function BookMarkButton({ bookDetail }: { bookDetail: BookInfo }) {
 	const { checkBookMarked, toggleBookMark } = useBookMarkStore();
@@ -190,8 +177,9 @@ function Content({ title, text }: { title: string; text: string }) {
 	return (
 		<Box mt={3}>
 			<SubTitle>{title}</SubTitle>
-			<Text lineClamp={7} whiteSpace={"pre-wrap"} fontSize={"sm"} ref={contentRef}>
+			<Text lineClamp={8} whiteSpace={"pre-wrap"} fontSize={"sm"} ref={contentRef}>
 				{text}
+				{text[text.length - 1] !== "." && "..."}
 			</Text>
 			{isClamped && <SpecPage buttonName="더보기" content={text} paramName={title} />}
 		</Box>
@@ -225,13 +213,14 @@ function SpecPage({
 			lazyMount
 			open={Boolean(isOpen)}
 			onOpenChange={() => navigation(-1)}
+			size={"xs"}
 		>
 			<Button variant="plain" ms={"auto"} px={0} display={"block"} onClick={handleChange}>
 				{buttonName}
 			</Button>
 			<DialogContent my={0} maxHeight={"100dvh"}>
 				<DialogHeader px={2} py={1}>
-					<DialogCloseBaseTrigger>
+					<DialogCloseBaseTrigger asChild>
 						<Button variant={"plain"} px={0}>
 							<Icon size="lg" aria-label="back">
 								<IoIosArrowBack />
@@ -316,5 +305,19 @@ function LoadingSkeleton() {
 				<SkeletonText noOfLines={1} />
 			</Stack>
 		</Box>
+	);
+}
+
+function NotFoundPage({ isbn }: { isbn?: string }) {
+	return (
+		<Flex bgColor="white" direction={"column"} h={"100%"}>
+			<SearchBarMock />
+			<Center flexGrow={1}>
+				<EmptyState
+					title={"페이지를 찾을 수 없습니다."}
+					description={isbn && `${isbn}에 대한 결과가 없습니다`}
+				/>
+			</Center>
+		</Flex>
 	);
 }

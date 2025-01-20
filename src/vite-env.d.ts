@@ -1,4 +1,6 @@
 /// <reference types="vite-plugin-pages/client-react" />
+/// <reference types="vite/client" />
+/// <reference types="vitest/globals" />
 
 declare module "*.css" {
 	const classes: { [key: string]: string };

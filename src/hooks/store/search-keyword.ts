@@ -1,33 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { BookInfo } from "./bookmark";
-import { v4 as uuidv4 } from "uuid";
 
-export type SearchProps = {
-	keyword: string;
-	bookResult: BookInfo[];
-};
+import { v4 as uuidv4 } from "uuid";
 
 export type Keyword = {
 	id: string;
 	keyword: string;
 };
-
-export interface BookResultState {
-	bookResult: SearchProps;
-	saveBookResult: (books: SearchProps) => void;
-	removeBookResult: () => void;
-}
-
-export const useBookResultStore = create<BookResultState>()((set) => ({
-	bookResult: {} as SearchProps,
-	saveBookResult: (books: SearchProps) => {
-		set(() => ({
-			bookResult: books,
-		}));
-	},
-	removeBookResult: () => set(() => ({ bookResult: {} as SearchProps })),
-}));
 
 export interface RecentSearchKeywordState {
 	RecentKeywords: Keyword[];
