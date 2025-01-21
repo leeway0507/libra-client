@@ -14,7 +14,7 @@ export default function NavBar() {
 			bgColor={"gray.50"}
 			py={3}
 			w={"100%"}
-			maxW={"sm"}
+			maxW="md"
 		>
 			<Flex gapX={2}>
 				<Item name="홈" to={"/"} icon={<IoMdHome />} />

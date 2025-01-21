@@ -21,6 +21,7 @@ const system = createSystem(defaultConfig, {
 			colors: {
 				GrayText: { value: "#6b7280" },
 				black: { value: "#1F2937" },
+				HighlightText: { value: "#1F2937" },
 				emptyBackground: { value: "#d4d4d8" },
 			},
 		},
@@ -54,14 +55,13 @@ function Layout({ children }: { children: React.ReactNode }) {
 			alignItems="center"
 			px={0}
 			position="relative"
-			shadow="2xl"
+			maxW="md"
 		>
 			<Box
 				display={{ smDown: "none" }}
 				position="sticky"
 				w="100%"
 				top={0}
-				maxW="sm"
 				h={10}
 				zIndex={10}
 				bgColor="emptyBackground"
@@ -70,7 +70,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 				<Box bgColor="Background" h={7} roundedTop="4xl" />
 			</Box>
 
-			<Container maxW="sm" px={0} bgColor="Background" flexGrow={1}>
+			<Container px={0} bgColor="Background" flexGrow={1}>
 				<Flex position="relative" direction="column" pb={32}>
 					{children}
 				</Flex>
@@ -80,7 +80,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 				position="fixed"
 				w="100%"
 				bottom={0}
-				maxW="sm"
+				maxW="md"
 				h={10}
 				zIndex={10}
 				background="emptyBackground"

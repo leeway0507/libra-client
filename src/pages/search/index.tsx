@@ -32,6 +32,9 @@ import BookImage from "@/components/book-image";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { SubTitle } from "@/components/text";
 import { HiLibrary } from "react-icons/hi";
+import { IoAlertCircleOutline } from "react-icons/io5";
+
+
 import { useBookSearch } from "./use-book-search";
 
 type SearchResult = {
@@ -50,7 +53,7 @@ export default function Page() {
 		<>
 			<SearchBar setOpen={setOpenRecentKeyword} />
 			<FilterBox />
-			<MainBox open={openRecentKeyword} />
+			<Main open={openRecentKeyword} />
 			<NavBar />
 		</>
 	);
@@ -155,7 +158,7 @@ const fetcher = async (url: string) => {
 	return res.json();
 };
 
-function MainBox({ open }: { open: boolean }) {
+function Main({ open }: { open: boolean }) {
 	const [schParams] = useSearchParams(new URLSearchParams(window.location.search));
 	const keyword = schParams.get("q");
 	const libCode = schParams.get("libCode");
@@ -166,27 +169,42 @@ function MainBox({ open }: { open: boolean }) {
 
 	const { data, error, isLoading } = useSWR<SearchResult[]>(
 		keyword && libCode ? searchUrl.toString() : null,
-		(url: string) => fetcher(url)
+		(url: string) => fetcher(url),
+		{
+			refreshInterval: 0,
+		}
 	);
 
 	const direct: SearchResult[] = [];
 	const indirect: SearchResult[] = [];
 	data?.forEach((e) => (e.score > 0.5 ? direct.push(e) : indirect.push(e)));
 
+	if (!keyword || !libCode || open) {
+		return <RecentKeyword />;
+	}
+
+	if (isLoading) {
+		return <Loading />;
+	}
+
+	if (error) {
+		return <ErrorPage />;
+	}
+
+	if (!data) {
+		return <NotFound keyword={keyword} />;
+	}
+
 	return (
-		<Flex flexGrow={1} direction={"column"} mx={5} pb={5} h={"100%"}>
-			{!keyword || !libCode || open ? (
-				<RecentKeyword />
-			) : isLoading ? (
-				<Loading />
-			) : !error && data ? (
+		<Box mx={5} pb={5}>
+			<Grid templateColumns="repeat(2, 1fr)" columnGap={8} rowGap={8}>
+				{direct.map((result) => (
+					<BookCard key={result.isbn} result={result} />
+				))}
+			</Grid>
+			<Separator my={3} />
+			{indirect.length > 0 && (
 				<>
-					<Grid templateColumns="repeat(2, 1fr)" columnGap={8} rowGap={8}>
-						{direct.map((result) => (
-							<BookCard key={result.isbn} result={result} />
-						))}
-					</Grid>
-					<Separator my={3} />
 					<Text py={5} fontSize={"xl"} fontWeight={600}>
 						기타 추천 도서
 					</Text>
@@ -196,12 +214,11 @@ function MainBox({ open }: { open: boolean }) {
 						))}
 					</Grid>
 				</>
-			) : (
-				<ErrorPage />
 			)}
-		</Flex>
+		</Box>
 	);
 }
+
 function BookCard({ result }: { result: SearchResult }) {
 	return (
 		<GridItem>
@@ -239,7 +256,7 @@ function RecentKeyword() {
 	const { RecentKeywords, removeKeyword } = useRecentSearchKeywordStore();
 	const { handleSearch } = useBookSearch();
 	return (
-		<Box>
+		<Box mx={5} pb={5}>
 			<SubTitle>최근 검색어</SubTitle>
 			{RecentKeywords.map((keyword) => (
 				<Flex key={keyword.id} _hover={{ bg: "gray.100" }}>
@@ -316,6 +333,17 @@ function ErrorPage() {
 				title="에러가 발생했습니다."
 				icon={<BiError />}
 				description="잠시후 다시 시도해주세요"
+			/>
+		</Flex>
+	);
+}
+function NotFound({ keyword }: { keyword: string }) {
+	return (
+		<Flex flexGrow={1}>
+			<EmptyState
+				title={`${keyword}에 대한 검색 결과가 없습니다.`}
+				description="인근 도서관을 추가하여 검색 범위를 늘려 보세요."
+				icon={<IoAlertCircleOutline />}
 			/>
 		</Flex>
 	);

@@ -16,7 +16,7 @@ const book: BookInfo = {
 };
 
 describe("useBookMarkStore", () => {
-	let store: {current:BookMarkState};
+	let store: { current: BookMarkState };
 
 	beforeEach(() => {
 		// 테스트마다 새로운 스토어 생성

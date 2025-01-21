@@ -21,13 +21,13 @@ import { district } from "./district";
 export default function Page() {
 	return (
 		<>
-			<MainBox />
+			<Main />
 			<NavBar />
 		</>
 	);
 }
 
-function MainBox() {
+function Main() {
 	const { chosenLibs, removeLib } = useLibStore();
 
 	return (

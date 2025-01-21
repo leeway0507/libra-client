@@ -3,7 +3,7 @@ import useLibStore, { LibInfo, LibLocation, LibState } from "./lib";
 import { renderHook, act } from "@testing-library/react";
 
 describe("useLibStore", () => {
-	let store: {current:LibState};
+	let store: { current: LibState };
 
 	beforeEach(() => {
 		// 테스트마다 새로운 스토어 생성
@@ -65,7 +65,9 @@ describe("useLibStore", () => {
 		act(() => {
 			store.current.changechosenLibs(libs);
 		});
-		expect(store.current.chosenLibs).toEqual(libs.map((lib) => ({ ...lib, isBestSeller: true })));
+		expect(store.current.chosenLibs).toEqual(
+			libs.map((lib) => ({ ...lib, isBestSeller: true }))
+		);
 	});
 
 	it("should update distances", () => {

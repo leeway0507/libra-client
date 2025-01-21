@@ -1,4 +1,6 @@
-import { Center, Image } from "@chakra-ui/react";
+import { Center, Icon, Image } from "@chakra-ui/react";
+import { IoBookOutline } from "react-icons/io5";
+
 
 export default function BookImage({ src }: { src: string }) {
 	return src ? (
@@ -22,7 +24,11 @@ export default function BookImage({ src }: { src: string }) {
 			mx="auto"
 			aspectRatio="1/1.414"
 		>
-			<Center fontSize="xs">도서 이미지</Center>
+			<Center fontSize="xs">
+				<Icon size={"xl"} opacity={0.3}>
+					<IoBookOutline />
+				</Icon>
+				</Center>
 		</Center>
 	);
 }
