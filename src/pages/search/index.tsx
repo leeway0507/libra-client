@@ -93,7 +93,7 @@ function SearchBar({ setOpen }: { setOpen: (b: boolean) => void }) {
 	const placeholder = keyword ? `${showMaxString(keyword)}에 대한 검색 결과` : "검색하기";
 
 	return (
-		<Box position={"sticky"} top={10} bgColor={"Background"} zIndex={5}>
+		<Box position={"sticky"} top={{base:10, smDown:0}} bgColor={"Background"} zIndex={5}>
 			<Container position={"relative"} px={0} my={0.5}>
 				<Button
 					position={"absolute"}
