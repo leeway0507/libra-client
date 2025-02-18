@@ -6,7 +6,6 @@ import routes from "~react-pages";
 import { ChakraProvider, Flex, Container, Box } from "@chakra-ui/react";
 import { Toaster } from "@/components/ui/toaster";
 import { createSystem, defaultConfig } from "@chakra-ui/react";
-import "@fontsource/noto-sans/index.css";
 
 const NotFound = lazy(() => import("./pages/404"));
 const ErrorPage = lazy(() => import("./pages/error"));
@@ -14,10 +13,6 @@ const ErrorPage = lazy(() => import("./pages/error"));
 const system = createSystem(defaultConfig, {
 	theme: {
 		tokens: {
-			fonts: {
-				heading: { value: `'Noto Sans', sans-serif` },
-				body: { value: `'Noto Sans', sans-serif` },
-			},
 			colors: {
 				GrayText: { value: "#6b7280" },
 				black: { value: "#1F2937" },
